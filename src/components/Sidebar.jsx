@@ -52,6 +52,7 @@ const Sidebar = ({children}) => {
   const handleSignOut = async () => {
     try {
       await logOut();
+      navigate("/dp2");
     } catch (error) {
       console.log(error);
     }

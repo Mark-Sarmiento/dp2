@@ -25,7 +25,7 @@ function App() {
         </Routes>
           <Sidebar>
             <Routes>
-              <Route path='/' element={<Home />} />
+              <Route path='/dp2' element={<Home />} />
               <Route path="/dashboard" element={<Protected> <Dashboard/> </Protected>}/>
               <Route path="/setparameters" element={<Protected> <AddUnit/> </Protected>}/>
               <Route path="/sensors/humidity" element={<Protected> <RHpage/> </Protected>}/>

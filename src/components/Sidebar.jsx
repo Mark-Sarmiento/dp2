@@ -52,7 +52,7 @@ const Sidebar = ({children}) => {
   const handleSignOut = async () => {
     try {
       await logOut();
-      navigate("/Nutriculture")
+      navigate("/dp2")
     } catch (error) {
       console.log(error);
     }

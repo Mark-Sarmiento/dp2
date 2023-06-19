@@ -21,7 +21,7 @@ const Signin = () => {
 
   useEffect(() => {
     if (user != null) {
-      navigate('/dashboard');
+      navigate('/setparameters');
     }
   }, [user, navigate]);
   

@@ -14,7 +14,7 @@ emailjs.init("kTo0FMoCg9hTzN5Hn");
 const Dashboard = () => {
 
   const { user } = UserAuth();
-  const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm') || '');
+  const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
   const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
  
 

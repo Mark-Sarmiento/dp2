@@ -60,7 +60,7 @@ const Sidebar = ({children}) => {
 
 
   return (
-    <div className={`inline-flex  `}>
+    <div className={`inline-flex `}>
       <div
         className={`bg-dark-purple h-screen p-5 pt-8 relative   ${
           open ? 'w-72' : 'w-20'
@@ -147,7 +147,7 @@ const Sidebar = ({children}) => {
       
       <Outlet />
       <div className='inline-flex '>
-      {children}
+        {children}
       </div>
       
     </div>

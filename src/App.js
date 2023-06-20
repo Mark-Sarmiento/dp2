@@ -16,7 +16,7 @@ import WTpage from './components/WTpage';
 
 function App() {
   return (
-    <div className='h-screen overflow-y-hidden mx-auto '>
+    <div className='h-screen overflow-y-hidden '>
       <AuthContextProvider>
         
         <Routes>

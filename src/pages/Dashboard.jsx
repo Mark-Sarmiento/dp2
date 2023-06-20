@@ -17,7 +17,6 @@ const Dashboard = () => {
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
   const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
  
-
   const setPetchay = () => {
     const postPetchay = {
       slctdParam: 'Petchay',
@@ -96,7 +95,6 @@ const Dashboard = () => {
       body.style.backgroundImage = '';
     }
   }, [selectedPlant]);
-
   // Start EC current
   const [ecdata, setecData] = useState([]);
   const [ecmin, setecmin] = useState();
@@ -145,7 +143,6 @@ const Dashboard = () => {
     }
   }, [user?.uid, ecmin]);
   // End EC current
-
   // Start RH current
   const [rhdata, setrhData] = useState([]);
   const [rhmin, setrhmin] = useState();
@@ -719,13 +716,13 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   // START Function to update the grid columns based on the screen size
   const updateGridColumns = () => {
     if (window.innerWidth < 768) {
-      setGridColumns("grid-cols-1");
+      setGridColumns("grid-cols-1 overflow-auto");
     } else if (window.innerWidth < 1024) {
-      setGridColumns("grid-cols-2 ");
+      setGridColumns("grid-cols-2 overflow-auto");
     } else if (window.innerWidth < 1200) {
-      setGridColumns("grid-cols-3 ");
+      setGridColumns("grid-cols-3 overflow-auto");
     }else {
-      setGridColumns("grid-cols-5");
+      setGridColumns("grid-cols-5 overflow-auto");
     }
   };
 
@@ -743,62 +740,62 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   return (
     <>
       {showPopupForm && <PopupForm onPetchay={setPetchay} onSpinach={setSpinach} />}
-      <div className="p-8">
-        
+      <div>
         <div className="bg-gray-200 bg-opacity-50 ">
           <h1 className=" p-8 text-white">Dashboard</h1>
         </div>
-        <div className="m-auto  flex pt-10  ">
-          <div className={`overflow-y-auto grid ${gridColumns} gap-8 mx-auto justify-center bg-white bg-opacity-50 p-4 border-2 border-black`} >
-            <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow`}>
-              <h3 className="text-center px-4">Electric Conductivity: </h3>
-              <p className="text-center px-4">{ECcurrent}</p>
-            </div>
-            <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Relative Humidity: </h3>
-              <p className="text-center px-4">{RHcurrent}</p>
-            </div>
-            <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Temperature: </h3>
-              <p className="text-center px-4">{Tempcurrent}</p>
-            </div>
-            <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">PH Level: </h3>
-              <p className="text-center px-4">{PHcurrent}</p>
-            </div>
-            <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Water Temperature: </h3>
-              <p className="text-center px-4">{WTcurrent}</p>
-            </div>
-            <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">PH Up Level: </h3>
-              <p className="text-center px-4 py-2">{phupdata}</p>
-            </div>
-            <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">PH Down Level: </h3>
-              <p className="text-center px-4">{phdowndata}</p>
-            </div>
-            <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Nutrient Soln Level: </h3>
-              <p className="text-center px-4">{nsdata}</p>
-            </div>
-            <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Water Refill Level: </h3>
-              <p className="text-center px-4"> {wrdata}</p>
-            </div>
-            <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Reservoir Level: </h3>
-              <p className="text-center px-4">{rsrvrdata}</p>  
-            </div>
-            <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
-              <h3 className="text-center px-4">Water Flow: </h3>
-              <p className="text-center px-4">{wfdata}</p>
+        <div className="p-8 ">
+          <div className="m-auto  inline-block pt-10 ">
+            <div className={` grid ${gridColumns} gap-8 mx-auto justify-center bg-white bg-opacity-50 p-4 border-2 border-black `} >
+              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow`}>
+                <h3 className="text-center px-4">Electric Conductivity: </h3>
+                <p className="text-center px-4">{ECcurrent}</p>
+              </div>
+              <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Relative Humidity: </h3>
+                <p className="text-center px-4">{RHcurrent}</p>
+              </div>
+              <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Temperature: </h3>
+                <p className="text-center px-4">{Tempcurrent}</p>
+              </div>
+              <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">PH Level: </h3>
+                <p className="text-center px-4">{PHcurrent}</p>
+              </div>
+              <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Water Temperature: </h3>
+                <p className="text-center px-4">{WTcurrent}</p>
+              </div>
+              <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">PH Up Level: </h3>
+                <p className="text-center px-4 py-2">{phupdata}</p>
+              </div>
+              <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">PH Down Level: </h3>
+                <p className="text-center px-4">{phdowndata}</p>
+              </div>
+              <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Nutrient Soln Level: </h3>
+                <p className="text-center px-4">{nsdata}</p>
+              </div>
+              <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Water Refill Level: </h3>
+                <p className="text-center px-4"> {wrdata}</p>
+              </div>
+              <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Reservoir Level: </h3>
+                <p className="text-center px-4">{rsrvrdata}</p>  
+              </div>
+              <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <h3 className="text-center px-4">Water Flow: </h3>
+                <p className="text-center px-4">{wfdata}</p>
+              </div>
             </div>
           </div>
         </div>
         <FirebaseData/>
       </div>
-
     </>
     );
     };

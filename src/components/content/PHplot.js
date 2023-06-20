@@ -37,7 +37,38 @@ const PHplot = () => {
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
 
-  const MAX_DATA_CHART = 20;
+      const [maxdata, setmaxdata] = useState(20);
+
+  // START Function to update the grid columns based on the screen size
+  const updatemaxdata = () => {
+    if (window.innerWidth < 1100) {
+      setmaxdata(8);
+    }else if (window.innerWidth < 1200) {
+      setmaxdata(10);
+    }else if (window.innerWidth < 1300) {
+      setmaxdata(12);
+    }else if (window.innerWidth < 1400) {
+      setmaxdata(14);
+    }else if (window.innerWidth < 1500) {
+      setmaxdata(16);
+    } else if (window.innerWidth < 1600) {
+      setmaxdata(18);
+    }else {
+      setmaxdata(20);
+    }
+  };
+
+  useEffect(() => {
+    // Update grid columns when the component mounts
+    updatemaxdata();
+    // Event listener to update grid columns on window resize
+    window.addEventListener("resize", updatemaxdata);
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", updatemaxdata);
+    };
+  }, []);
+  // END Function to update the grid columns based on the screen size
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +88,7 @@ const PHplot = () => {
             counter++;
 
             // Limit the number of data points to display
-            if (counter >= MAX_DATA_CHART) {
+            if (counter >= maxdata) {
               chartData.shift();
             }
           }
@@ -79,12 +110,12 @@ const PHplot = () => {
     };
 
     fetchData();
-  }, [user?.uid]);
+  }, [user?.uid, maxdata]);
 
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
   return (
-    <div className="w-screen h-screen py-10 ">
+    <div className=" absolute right-4 w-screen h-screen p-10 ">
       <p></p>
       <DashboardBox className="bg-gray-300 ml-4 px-4 " width="calc(87% - 100px)" height={300}>
         <ResponsiveContainer width="100%" height="100%">

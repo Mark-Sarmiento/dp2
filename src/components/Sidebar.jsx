@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserAuth } from '../context/AuthContext';
 import { RiDashboardFill, RiPlantFill, RiLogoutBoxRLine } from 'react-icons/ri';
 import { BsArrowLeftShort, BsPlusLg, BsChevronDown } from 'react-icons/bs';
-import { NavLink,  Outlet, useNavigate } from 'react-router-dom';
+import { NavLink,  Outlet, useNavigate, HashRouter } from 'react-router-dom';
 
 const Sidebar = ({children}) => {
   const { logOut, user } = UserAuth();

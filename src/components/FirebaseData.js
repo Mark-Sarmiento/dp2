@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { database } from '../firebase';
-import { ref,  onValue, off, getDatabase, child, push, update} from 'firebase/database';
+import { ref,   update, } from 'firebase/database';
 import { UserAuth } from '../context/AuthContext';
 
 const FirebaseData = () => {
     const { user } = UserAuth();
-    
     //Setup the rtdb for new users 
+    function getCurrentDate() {
+      const newDate = new Date();
+      const year = newDate.getFullYear();
+      const month = String(newDate.getMonth() + 1).padStart(2, '0');
+      const day = String(newDate.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
     function writeNewPost() {
         // create a key for values and time in rh sensors 
         //every time i click 
         const newDate = new Date();
-        const date = newDate.toISOString().slice(0, 10).replace(/-/g, ':');
-        const time = newDate.toTimeString().slice(0, 8);
+        const date = getCurrentDate();
+        const time = newDate ? newDate.toTimeString().slice(0, 8) : '';
         console.log(newDate);
         console.log(date);
-        console.log(time);
-        
-        const Tempkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/Temp' )).key;
-        const ECkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/EC' )).key;
-        const PHkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/PH' )).key;
-        const WTkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/WT' )).key;
+        console.log(time);  
+      
         // create a random values in rh sensors
         const postDatarh = {
           Value: Math.floor(Math.random()*100)
@@ -72,48 +74,15 @@ const FirebaseData = () => {
         updates['/Users/' + `${user?.uid}` + '/ESP1/data/IRWATER/'] = postDatairwater;
 
       
-        return update(ref(database), updates);
+        return update(ref(database), updates, time, date);
       }
     
-// relative humidity
-    const [data1, setData1] = useState(null); 
-
-    useEffect(() => {
-
-        const RH = `/Users/${user?.uid}/ESP1/RH/data/Value`;
-    
-        const path = (RH) ; // Replace with the actual path
-
-        const onDataChange = (snapshot) => {
-            const fetchedData1 = snapshot.val();
-            setData1(fetchedData1);
-        };
-
-        const dataRef1 = ref(database, path);
-        onValue(dataRef1, onDataChange);
-
-        // Cleanup the listener when the component unmounts
-        return () => {
-            // Unsubscribe from the listener
-            off(dataRef1, onDataChange);
-        };
-    }, [user?.uid]);
-
+//
 
     return (
         <div>
-            {data1 ? (
-                <div>
-                    <h2>Data from Firebase Realtime Database:</h2>
-                    <p>Relative humidity : {data1}</p>
-                    <p>Temperature: </p>
-                    <p>{user?.uid}</p>
-                    <button onClick={writeNewPost}>Create</button>
-                </div>
-            ) : (
+           
                 <button onClick={writeNewPost}>Create</button>
-            )
-            }
             
         </div >
     );

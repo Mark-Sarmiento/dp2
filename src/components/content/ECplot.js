@@ -83,8 +83,9 @@ const ECplot = () => {
             for (let time in children) {
               if (children.hasOwnProperty(time)) {
                 const value = children[time].Value;
+                const formattedTime = time.slice(0, -3); // Remove the last 3 characters (seconds)
                 const dataPoint = {
-                  time: time,
+                  time: formattedTime,
                   value: value,
                 };
                 chartData.push(dataPoint);

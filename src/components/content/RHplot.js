@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from "recharts";
 import { database } from '../../firebase';
 import { ref, onValue } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
@@ -35,6 +35,7 @@ const RHplot = () => {
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
   const [maxData, setMaxData] = useState(20);
+  const [averageData, setAverageData] = useState([]);
 
   const updateMaxData = () => {
     if (window.innerWidth < 1100) {
@@ -75,30 +76,65 @@ const RHplot = () => {
       onValue(dbRef, (snapshot) => {
         const firebaseData = snapshot.val();
         const chartData = [];
+        const averageData = [];
 
-        let counter = 0;
+        let sum = 0;
+        let dataCount = 0;
+        let currentDate = null;
         for (let date in firebaseData) {
           if (firebaseData.hasOwnProperty(date)) {
             const children = firebaseData[date];
             for (let time in children) {
               if (children.hasOwnProperty(time)) {
                 const value = children[time].Value;
+                const formattedTime = time.slice(0, -3); // Remove the last 3 characters (seconds)
+
+                // Add data point to chart data
                 const dataPoint = {
-                  time: time,
+                  time: formattedTime,
                   value: value,
                 };
                 chartData.push(dataPoint);
-                counter++;
 
-                if (counter >= maxData) {
-                  chartData.shift();
+                // Calculate average value for each day
+                const dataDate = new Date(date);
+                if (!currentDate) {
+                  currentDate = dataDate;
                 }
+                else if (dataDate.getTime() === currentDate.getTime()) {
+                  sum += value;
+                  dataCount++;
+                } else {
+                  const averageValue = sum / dataCount;
+                  const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
+                  const averageDataPoint = {
+                    date: formattedDate,
+                    value: averageValue,
+                  };
+                  averageData.push(averageDataPoint);
+
+                  sum = value;
+                  dataCount = 1;
+                  currentDate = dataDate;
+                }
+
+                
               }
             }
           }
         }
 
+        // Add the last average value
+        const averageValue = sum / dataCount;
+        const formattedDate = currentDate?.toISOString?.().slice(0, 10); // Format date as "yyyy:mm:dd"
+        const averageDataPoint = {
+          date: formattedDate,
+          value: averageValue,
+        };
+        averageData.push(averageDataPoint);
+
         setData(chartData);
+        setAverageData(averageData);
 
         const latestValue = chartData[chartData.length - 1]?.value;
         if (latestValue < rhmin) {
@@ -144,11 +180,36 @@ const RHplot = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
+            <Brush dataKey="time" height={30} stroke="#8884d8" />
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
-      <LatestValueRH value={currentValue} />
+      <div className="mt-4">
+        <LatestValueRH value={currentValue} />
+      </div>
+      <DashboardBox className="bg-gray-300 mt-4 ml-4 px-4 py-2" width="calc(87% - 100px)" height={200}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={averageData}
+            margin={{
+              top: 20,
+              bottom: 20,
+              left: 20,
+              right: 20
+            }}
+          >
+            <XAxis dataKey="date" />
+            <YAxis dataKey="value" />
+            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+            <Tooltip content={<CustomTooltip />} />
+            <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </DashboardBox>
+      <div>
+
       <FirebaseData/>
+      </div>
     </div>
   );
 };

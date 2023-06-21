@@ -10,32 +10,33 @@ const FirebaseData = () => {
     function writeNewPost() {
         // create a key for values and time in rh sensors 
         //every time i click 
-        const RHkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/RH' )).key;
+        const newDate = new Date();
+        const date = newDate.toISOString().slice(0, 10).replace(/-/g, ':');
+        const time = newDate.toTimeString().slice(0, 8);
+        console.log(newDate);
+        console.log(date);
+        console.log(time);
+        
         const Tempkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/Temp' )).key;
         const ECkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/EC' )).key;
         const PHkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/PH' )).key;
         const WTkeys = push(ref(database,'/Users/' + `${user?.uid}` + '/ESP1/data/WT' )).key;
         // create a random values in rh sensors
         const postDatarh = {
-          Value: Math.floor(Math.random()*100),
-          Time: parseInt(0),
+          Value: Math.floor(Math.random()*100)
         };
         // create a random values in temp sensors
         const postDatatemp = {
-            Value: Math.floor(Math.random()*100),
-            Time: parseInt(0),
+            Value: Math.floor(Math.random()*100)
           };
           const postDataec = {
-            Value: Math.floor(Math.random()*100),
-            Time: parseInt(0),
+            Value: Math.floor(Math.random()*100)
           };
           const postDataph = {
-            Value: Math.floor(Math.random()*100),
-            Time: parseInt(0),
+            Value: Math.floor(Math.random()*100)
           };
           const postDatawt = {
-            Value: Math.floor(Math.random()*100),
-            Time: parseInt(0),
+            Value: Math.floor(Math.random()*100)
           };
           const postDatairphup = {
             Value: Math.floor(Math.random()*55),
@@ -59,11 +60,11 @@ const FirebaseData = () => {
           };
         // return the value and time to
         const updates = {};
-        updates['/Users/' + `${user?.uid}` + '/ESP1/data/RH/'+ RHkeys] = postDatarh;
-        updates['/Users/' + `${user?.uid}` + '/ESP1/data/Temp/'+ Tempkeys] = postDatatemp;
-        updates['/Users/' + `${user?.uid}` + '/ESP1/data/EC/'+ ECkeys] = postDataec;
-        updates['/Users/' + `${user?.uid}` + '/ESP1/data/PH/'+ PHkeys] = postDataph;
-        updates['/Users/' + `${user?.uid}` + '/ESP1/data/WT/'+ WTkeys] = postDatawt;
+        updates['/Users/' + `${user?.uid}` + '/ESP1/data/RH/'+ `${date}` +'/'+ `${time}`] = postDatarh;
+        updates['/Users/' + `${user?.uid}` + '/ESP1/data/Temp/'+ `${date}` +'/'+ `${time}`] = postDatatemp;
+        updates['/Users/' + `${user?.uid}` + '/ESP1/data/EC/'+ `${date}` +'/'+ `${time}`] = postDataec;
+        updates['/Users/' + `${user?.uid}` + '/ESP1/data/PH/'+ `${date}` +'/'+ `${time}`] = postDataph;
+        updates['/Users/' + `${user?.uid}` + '/ESP1/data/WT/'+ `${date}` +'/'+ `${time}`] = postDatawt;
         updates['/Users/' + `${user?.uid}` + '/ESP1/data/IRPHUP/'] = postDatairphup;
         updates['/Users/' + `${user?.uid}` + '/ESP1/data/IRPHDOWN/'] = postDatairphdown;
         updates['/Users/' + `${user?.uid}` + '/ESP1/data/IRFERTILIZER/'] = postDatairfertilizer;

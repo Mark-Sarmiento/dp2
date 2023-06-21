@@ -1,5 +1,6 @@
 import React from 'react';
 import RHplot from './content/RHplot';
+import FirebaseData from './FirebaseData';
 
 const RHpage = () => {
   return (
@@ -9,6 +10,8 @@ const RHpage = () => {
         <div className='relative'>
           <RHplot />
         </div>
+
+        <FirebaseData/>
       </div>
     </div>
   );

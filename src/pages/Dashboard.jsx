@@ -20,18 +20,18 @@ const Dashboard = () => {
   const setPetchay = () => {
     const postPetchay = {
       slctdParam: 'Petchay',
-      RHmin: 50,
-      RHmax: 100,
-      ECmin: 10,
-      ECmax: 100,
+      RHmin: 40,
+      RHmax: 70,
+      ECmin: parseFloat(1.5),
+      ECmax: parseFloat(2),
       Tempmin: 50,
       Tempmax: 100,
       PHmin: 50,
       PHmax: 100,
-      WTmin: 50,
-      WTmax: 100,
-      PHupmin: 50,
-      PHupmax: 100,
+      WTmin: parseFloat(55),
+      WTmax: parseFloat(75),
+      PHupmin: parseFloat(5.5),
+      PHupmax: parseFloat(6.5),
       PHdownmin: 50,
       PHdownmax: 100,
       NSmin: 50,
@@ -113,11 +113,20 @@ const Dashboard = () => {
         const firebaseData = snapshot.val();
         const chartData = [];
   
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              value: firebaseData[key].Value,
-            });
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+               
+              }
+            }
           }
         }
   
@@ -161,11 +170,20 @@ const Dashboard = () => {
         const firebaseData = snapshot.val();
         const chartData = [];
   
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              value: firebaseData[key].Value,
-            });
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+               
+              }
+            }
           }
         }
   
@@ -210,11 +228,20 @@ const Dashboard = () => {
         const firebaseData = snapshot.val();
         const chartData = [];
   
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              value: firebaseData[key].Value,
-            });
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+               
+              }
+            }
           }
         }
   
@@ -259,11 +286,20 @@ const Dashboard = () => {
         const firebaseData = snapshot.val();
         const chartData = [];
   
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              value: firebaseData[key].Value,
-            });
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+               
+              }
+            }
           }
         }
   
@@ -308,11 +344,20 @@ const Dashboard = () => {
         const firebaseData = snapshot.val();
         const chartData = [];
   
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              value: firebaseData[key].Value,
-            });
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+               
+              }
+            }
           }
         }
   

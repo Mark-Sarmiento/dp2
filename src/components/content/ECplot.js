@@ -4,10 +4,9 @@ import { database } from '../../firebase';
 import { ref, onValue } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
-
+import FirebaseData from "../FirebaseData";
 
 const CustomTooltip = ({ active, payload }) => {
-
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
     return (
@@ -20,7 +19,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const LatestValue = ({ value }) => {
+const LatestValueRH = ({ value }) => {
   return (
     <div className="value-container">
       <h3>Latest Value:</h3>
@@ -29,95 +28,97 @@ const LatestValue = ({ value }) => {
   );
 };
 
-
-
 const ECplot = () => {
   const { user } = UserAuth();
   const [data, setData] = useState([]);
+  const [ecmin, setecmin] = useState();
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
+  const [maxData, setMaxData] = useState(20);
 
-      const [maxdata, setmaxdata] = useState(20);
-
-  // START Function to update the grid columns based on the screen size
-  const updatemaxdata = () => {
+  const updateMaxData = () => {
     if (window.innerWidth < 1100) {
-      setmaxdata(8);
-    }else if (window.innerWidth < 1200) {
-      setmaxdata(10);
-    }else if (window.innerWidth < 1300) {
-      setmaxdata(12);
-    }else if (window.innerWidth < 1400) {
-      setmaxdata(14);
-    }else if (window.innerWidth < 1500) {
-      setmaxdata(16);
+      setMaxData(8);
+    } else if (window.innerWidth < 1200) {
+      setMaxData(10);
+    } else if (window.innerWidth < 1300) {
+      setMaxData(12);
+    } else if (window.innerWidth < 1400) {
+      setMaxData(14);
+    } else if (window.innerWidth < 1500) {
+      setMaxData(16);
     } else if (window.innerWidth < 1600) {
-      setmaxdata(18);
-    }else {
-      setmaxdata(20);
+      setMaxData(18);
+    } else {
+      setMaxData(20);
     }
   };
 
   useEffect(() => {
-    // Update grid columns when the component mounts
-    updatemaxdata();
-    // Event listener to update grid columns on window resize
-    window.addEventListener("resize", updatemaxdata);
-    // Cleanup the event listener when the component unmounts
+    updateMaxData();
+    window.addEventListener("resize", updateMaxData);
     return () => {
-      window.removeEventListener("resize", updatemaxdata);
+      window.removeEventListener("resize", updateMaxData);
     };
   }, []);
-  // END Function to update the grid columns based on the screen size
 
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/EC`);
+      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/ECmin`);
+
+      const dbconfCallback = onValue(dbconf, (snapshot) => {
+        const ECmin = snapshot.val();
+        setecmin(ECmin);
+      });
+
       onValue(dbRef, (snapshot) => {
         const firebaseData = snapshot.val();
         const chartData = [];
 
         let counter = 0;
-        for (let key in firebaseData) {
-          if (firebaseData.hasOwnProperty(key)) {
-            chartData.push({
-              name: key,
-              value: firebaseData[key].Value,
-              time: firebaseData[key].Time,
-            });
-            counter++;
+        for (let date in firebaseData) {
+          if (firebaseData.hasOwnProperty(date)) {
+            const children = firebaseData[date];
+            for (let time in children) {
+              if (children.hasOwnProperty(time)) {
+                const value = children[time].Value;
+                const dataPoint = {
+                  time: time,
+                  value: value,
+                };
+                chartData.push(dataPoint);
+                counter++;
 
-            // Limit the number of data points to display
-            if (counter >= maxdata) {
-              chartData.shift();
+                if (counter >= maxData) {
+                  chartData.shift();
+                }
+              }
             }
           }
         }
 
         setData(chartData);
 
-        
-        // Check the latest fetched data and update the color accordingly
         const latestValue = chartData[chartData.length - 1]?.value;
-        if (latestValue < 50) {
-          setColor("red"); // Change the line color to red if the latest value is below 50
-          setAreaColor("url(#colorValueRed)"); // Change the area color to red gradient if the latest value is below 50
+        if (latestValue < ecmin) {
+          setColor("red");
+          setAreaColor("url(#colorValueRed)");
         } else {
-          setColor("#8884d8"); // Reset the line color to the default if the latest value is 50 or above
-          setAreaColor("url(#colorValue)"); // Reset the area color to the default gradient if the latest value is 50 or above
+          setColor("#8884d8");
+          setAreaColor("url(#colorValue)");
         }
       });
     };
 
     fetchData();
-  }, [user?.uid, maxdata]);
+  }, [user?.uid, maxData, ecmin]);
 
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
   return (
-    <div className=" absolute right-4 w-screen h-screen p-10 ">
-      <p></p>
-      <DashboardBox className="bg-gray-300 ml-4 px-4 " width="calc(87% - 100px)" height={300}>
+    <div className="absolute right-4 w-screen h-screen p-10">
+      <DashboardBox className="bg-gray-300 ml-4 px4" width="calc(87% - 100px)" height={300}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
@@ -146,7 +147,8 @@ const ECplot = () => {
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
-      <LatestValue value={currentValue} />
+      <LatestValueRH value={currentValue} />
+      <FirebaseData/>
     </div>
   );
 };

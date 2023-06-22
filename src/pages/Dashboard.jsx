@@ -7,6 +7,13 @@ import emailjs from "emailjs-com";
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
 import PopupForm from '../context/PopupForm';
+import { RiWaterFlashFill} from 'react-icons/ri';
+import { WiHumidity } from 'react-icons/wi';
+import { TbTemperatureCelsius } from 'react-icons/tb';
+import { FaTemperatureHigh, FaWater } from 'react-icons/fa';
+import {GiFertilizerBag, GiWaterSplash, GiWaterTank} from 'react-icons/gi'
+import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
+import pHicon from "../assets/pHicon.png"
 
 emailjs.init("kTo0FMoCg9hTzN5Hn");
 
@@ -26,12 +33,12 @@ const Dashboard = () => {
       ECmax: parseFloat(2),
       Tempmin: 50,
       Tempmax: 100,
-      PHmin: 50,
-      PHmax: 100,
+      PHmin: parseFloat(5.5),
+      PHmax: parseFloat(6.5),
       WTmin: parseFloat(55),
       WTmax: parseFloat(75),
-      PHupmin: parseFloat(5.5),
-      PHupmax: parseFloat(6.5),
+      PHupmin: 50,
+      PHupmax: 100,
       PHdownmin: 50,
       PHdownmax: 100,
       NSmin: 50,
@@ -792,47 +799,80 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
         <div className="p-8 ">
           <div className="m-auto  inline-block pt-10 ">
             <div className={` grid ${gridColumns} gap-8 mx-auto justify-center bg-white bg-opacity-50 p-4 border-2 border-black `} >
-              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow`}>
+              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
+                <div className="flex justify-center items-center mb-2">
+                  <RiWaterFlashFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Electric Conductivity: </h3>
                 <p className="text-center px-4">{ECcurrent}</p>
               </div>
               <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <WiHumidity className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Relative Humidity: </h3>
                 <p className="text-center px-4">{RHcurrent}</p>
               </div>
               <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <TbTemperatureCelsius className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Temperature: </h3>
                 <p className="text-center px-4">{Tempcurrent}</p>
               </div>
               <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <img src={pHicon} alt="pH Level Icon" className="h-12 w-12" />
+                </div>
                 <h3 className="text-center px-4">PH Level: </h3>
                 <p className="text-center px-4">{PHcurrent}</p>
               </div>
               <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <FaTemperatureHigh className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Temperature: </h3>
                 <p className="text-center px-4">{WTcurrent}</p>
               </div>
               <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <BsFillArrowUpCircleFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">PH Up Level: </h3>
                 <p className="text-center px-4 py-2">{phupdata}</p>
               </div>
               <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <BsFillArrowDownCircleFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">PH Down Level: </h3>
                 <p className="text-center px-4">{phdowndata}</p>
               </div>
               <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiFertilizerBag className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Nutrient Soln Level: </h3>
                 <p className="text-center px-4">{nsdata}</p>
               </div>
               <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiWaterSplash className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Refill Level: </h3>
                 <p className="text-center px-4"> {wrdata}</p>
               </div>
               <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiWaterTank className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Reservoir Level: </h3>
                 <p className="text-center px-4">{rsrvrdata}</p>  
               </div>
               <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <FaWater className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Flow: </h3>
                 <p className="text-center px-4">{wfdata}</p>
               </div>

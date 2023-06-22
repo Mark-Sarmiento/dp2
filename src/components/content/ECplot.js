@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from "recharts";
 import { database } from '../../firebase';
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, off } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
 import FirebaseData from "../FirebaseData";
+import BoxHeader from "./BoxHeader.tsx";
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -35,6 +36,7 @@ const ECplot = () => {
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
   const [maxData, setMaxData] = useState(20);
+  const [averageData, setAverageData] = useState([]);
 
   const updateMaxData = () => {
     if (window.innerWidth < 1100) {
@@ -75,8 +77,11 @@ const ECplot = () => {
       onValue(dbRef, (snapshot) => {
         const firebaseData = snapshot.val();
         const chartData = [];
+        const averageData = [];
 
-        let counter = 0;
+        let sum = 0;
+        let dataCount = 0;
+        let currentDate = null;
         for (let date in firebaseData) {
           if (firebaseData.hasOwnProperty(date)) {
             const children = firebaseData[date];
@@ -84,22 +89,53 @@ const ECplot = () => {
               if (children.hasOwnProperty(time)) {
                 const value = children[time].Value;
                 const formattedTime = time.slice(0, -3); // Remove the last 3 characters (seconds)
+
+                // Add data point to chart data
                 const dataPoint = {
                   time: formattedTime,
                   value: value,
                 };
                 chartData.push(dataPoint);
-                counter++;
 
-                if (counter >= maxData) {
-                  chartData.shift();
+                // Calculate average value for each day
+                const dataDate = new Date(date);
+                if (!currentDate) {
+                  currentDate = dataDate;
                 }
+                else if (dataDate.getTime() === currentDate.getTime()) {
+                  sum += value;
+                  dataCount++;
+                } else {
+                  const averageValue = sum / dataCount;
+                  const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
+                  const averageDataPoint = {
+                    date: formattedDate,
+                    value: averageValue,
+                  };
+                  averageData.push(averageDataPoint);
+
+                  sum = value;
+                  dataCount = 1;
+                  currentDate = dataDate;
+                }
+
+                
               }
             }
           }
         }
 
+        // Add the last average value 
+        const averageValue = sum / dataCount;
+        const formattedDate = currentDate?.toISOString?.().slice(0, 10); // Format date as "yyyy:mm:dd"
+        const averageDataPoint = {
+          date: formattedDate,
+          value: averageValue,
+        };
+        averageData.push(averageDataPoint);
+
         setData(chartData);
+        setAverageData(averageData);
 
         const latestValue = chartData[chartData.length - 1]?.value;
         if (latestValue < ecmin) {
@@ -110,6 +146,9 @@ const ECplot = () => {
           setAreaColor("url(#colorValue)");
         }
       });
+      return () => {
+        off(dbconf, 'value', dbconfCallback);
+      };
     };
 
     fetchData();
@@ -119,17 +158,12 @@ const ECplot = () => {
 
   return (
     <div className="absolute right-4 w-screen h-screen p-10">
-      <DashboardBox className="bg-gray-300 ml-4 px4" width="calc(87% - 100px)" height={300}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{
-              top: 20,
-              bottom: 20,
-              left: 20,
-              right: 20
-            }}
-          >
+
+      <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="45%">   
+        <BoxHeader title="Relative Humidity" subtitle="Realtime Data" sideText={"Latest Value"+currentValue}/>
+        <ResponsiveContainer width="100%" height={300}>
+          
+          <AreaChart data={data} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
@@ -145,11 +179,27 @@ const ECplot = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
+            <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={data.length - maxData}/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
-      <LatestValueRH value={currentValue} />
-      <FirebaseData/>
+
+      <DashboardBox className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="35%">
+        <BoxHeader title="Average Data Per Day" />
+        <ResponsiveContainer width="100%" height={250}>
+          <AreaChart data={averageData} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>
+            <XAxis dataKey="date" />
+            <YAxis dataKey="value" />
+            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+            <Tooltip content={<CustomTooltip />} />
+            <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
+            <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={averageData.length - 7}/>
+          </AreaChart>
+        </ResponsiveContainer>
+      </DashboardBox>
+      {/*
+      <div> <FirebaseData/></div>
+       */}
     </div>
   );
 };

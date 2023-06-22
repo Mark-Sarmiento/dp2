@@ -10,8 +10,6 @@ const RHpage = () => {
         <div className='relative'>
           <RHplot />
         </div>
-
-        <FirebaseData/>
       </div>
     </div>
   );

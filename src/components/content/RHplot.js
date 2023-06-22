@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from "recharts";
+import { AreaChart, Area,Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from "recharts";
 import { database } from '../../firebase';
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, off } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
 import FirebaseData from "../FirebaseData";
+import BoxHeader from "./BoxHeader.tsx";
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -124,7 +125,7 @@ const RHplot = () => {
           }
         }
 
-        // Add the last average value
+        // Add the last average value 
         const averageValue = sum / dataCount;
         const formattedDate = currentDate?.toISOString?.().slice(0, 10); // Format date as "yyyy:mm:dd"
         const averageDataPoint = {
@@ -145,6 +146,9 @@ const RHplot = () => {
           setAreaColor("url(#colorValue)");
         }
       });
+      return () => {
+        off(dbconf, 'value', dbconfCallback);
+      };
     };
 
     fetchData();
@@ -154,17 +158,12 @@ const RHplot = () => {
 
   return (
     <div className="absolute right-4 w-screen h-screen p-10">
-      <DashboardBox className="bg-gray-300 ml-4 px4" width="calc(87% - 100px)" height={300}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{
-              top: 20,
-              bottom: 20,
-              left: 20,
-              right: 20
-            }}
-          >
+
+      <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="45%">   
+        <BoxHeader title="Relative Humidity" subtitle="Realtime Data" sideText={"Latest Value"+currentValue}/>
+        <ResponsiveContainer width="100%" height={300}>
+          
+          <AreaChart data={data} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
@@ -180,36 +179,27 @@ const RHplot = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
-            <Brush dataKey="time" height={30} stroke="#8884d8" />
+            <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={data.length - maxData}/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
-      <div className="mt-4">
-        <LatestValueRH value={currentValue} />
-      </div>
-      <DashboardBox className="bg-gray-300 mt-4 ml-4 px-4 py-2" width="calc(87% - 100px)" height={200}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={averageData}
-            margin={{
-              top: 20,
-              bottom: 20,
-              left: 20,
-              right: 20
-            }}
-          >
+
+      <DashboardBox className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="35%">
+        <BoxHeader title="Average Data Per Day" />
+        <ResponsiveContainer width="100%" height={250}>
+          <AreaChart data={averageData} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>
             <XAxis dataKey="date" />
             <YAxis dataKey="value" />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
+            <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={averageData.length - 7}/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
-      <div>
-
-      <FirebaseData/>
-      </div>
+      {/*
+      <div> <FirebaseData/></div>
+       */}
     </div>
   );
 };

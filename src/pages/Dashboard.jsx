@@ -22,7 +22,27 @@ const Dashboard = () => {
 
   const { user } = UserAuth();
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
-  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
+  const [selectedPlant, setSelectedPlant] = useState();
+  useEffect(() => {
+      const fetchData = async () => {
+        const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
+    
+        const dbconfCallback = onValue(dbconf, (snapshot) => {
+          const slctdParam = snapshot.val();
+          setSelectedPlant(slctdParam);
+        });
+    
+      
+    
+        // Clean up the listeners when component unmounts or when user?.uid changes
+        return () => {
+          off(dbconf, 'value', dbconfCallback);
+        };
+      };
+      fetchData();
+      }, [user?.uid, selectedPlant]);
+  
+  
  
   const setPetchay = () => {
     const postPetchay = {
@@ -51,8 +71,6 @@ const Dashboard = () => {
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
-    setSelectedPlant('Petchay');
-    localStorage.setItem('selectedPlant', 'Petchay');
     setShowPopupForm(false);
     return update(ref(database), updates);
   };
@@ -84,8 +102,6 @@ const Dashboard = () => {
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
-    setSelectedPlant('Spinach');
-    localStorage.setItem('selectedPlant', 'Spinach');
     setShowPopupForm(false);
     return update(ref(database), updates);
   };

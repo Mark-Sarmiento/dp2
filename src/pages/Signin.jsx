@@ -35,7 +35,7 @@ const Signin = () => {
           <div className="flex items-center px-10 py-2 relative">
             <GoogleButton className="mr-2" onClick={handleGoogleSignIn} />
           </div>
-          <div className="flex flex-col mb-4">
+          {/*<div className="flex flex-col mb-4">
             <label className="text-black">Username</label>
             <input className="border relative bg-gray-100 py-2" type="text" />
           </div>
@@ -45,7 +45,7 @@ const Signin = () => {
           </div>
           <button className="w-full py-3 mt-8 bg-indigo-600 hover:bg-indigo-500 relative text-white">Sign In</button>
           <p className="flex items-center mt-2"><input className="mr-2" type="checkbox" />Remember me </p>
-          <p className="text-cent mt-8">Create Account</p>
+          <p className="text-cent mt-8">Create Account</p>*/}
         </form>
       </div>
 

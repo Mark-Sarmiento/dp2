@@ -910,8 +910,7 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
             </DashboardBox>
           
         </div>
-
-        <FirebaseData/>
+          <FirebaseData/>
       </div>
     </>
     );

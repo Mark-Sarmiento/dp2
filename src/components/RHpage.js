@@ -10,8 +10,9 @@ const RHpage = () => {
   const {user} = UserAuth();
   // START Retain the background even when reloading the page
   const [selectedPlant, setSelectedPlant] = useState();
-  useEffect(() => {
-      const fetchData = async () => {
+ 
+      useEffect(() => {
+        const fetchData = async () => {
         const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
     
         const dbconfCallback = onValue(dbconf, (snapshot) => {
@@ -24,20 +25,18 @@ const RHpage = () => {
         };
       };
       fetchData();
-      }, [user?.uid, selectedPlant]);
 
-      useEffect(() => {
-    const body = document.getElementsByTagName('body')[0];
-    if (selectedPlant === 'Spinach') {
-      body.style.backgroundImage = `url(${spinach})`;
-      body.style.backgroundSize = 'cover';
-    } else if (selectedPlant === 'Petchay') {
-      body.style.backgroundImage = `url(${petchay})`;
-      body.style.backgroundSize = 'cover';
-    } else {
-      body.style.backgroundImage = '';
-    }
-  }, [selectedPlant]);
+      const body = document.getElementsByTagName('body')[0];
+      if (selectedPlant === 'Spinach') {
+        body.style.backgroundImage = `url(${spinach})`;
+        body.style.backgroundSize = 'cover';
+      } else if (selectedPlant === 'Petchay') {
+        body.style.backgroundImage = `url(${petchay})`;
+        body.style.backgroundSize = 'cover';
+      } else {
+        body.style.backgroundImage = '';
+      }
+    }, [user?.uid, selectedPlant]);
   // END Retain the background even when reloading the page
   return (
     <div className=' m-auto chart-container'>

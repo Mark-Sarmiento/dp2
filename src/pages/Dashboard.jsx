@@ -7,6 +7,14 @@ import emailjs from "emailjs-com";
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
 import PopupForm from '../context/PopupForm';
+import { RiWaterFlashFill} from 'react-icons/ri';
+import { WiHumidity } from 'react-icons/wi';
+import { TbTemperatureCelsius } from 'react-icons/tb';
+import { FaTemperatureHigh, FaWater } from 'react-icons/fa';
+import {GiFertilizerBag, GiWaterSplash, GiWaterTank} from 'react-icons/gi'
+import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
+import pHicon from "../assets/pHicon.png"
+import DashboardBox from "../components/content/DashboardBox";
 
 emailjs.init("kTo0FMoCg9hTzN5Hn");
 
@@ -15,73 +23,95 @@ const Dashboard = () => {
 
   const { user } = UserAuth();
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
-  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
+  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant'));
+  {/*
+  useEffect(() => {
+      const fetchData = async () => {
+        const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
+    
+        const dbconfCallback = onValue(dbconf, (snapshot) => {
+          const slctdParam = snapshot.val();
+          setSelectedPlant(slctdParam);
+        });
+    
+      
+    
+        // Clean up the listeners when component unmounts or when user?.uid changes
+        return () => {
+          off(dbconf, 'value', dbconfCallback);
+        };
+      };
+      if (user?.uid) {
+      fetchData();
+      }
+    }, [user?.uid]);
+  
+  
+    const setPetchay = () => {
+      const postPetchay = {
+        slctdParam: 'Petchay',
+        RHmin: 40,
+        RHmax: 70,
+        ECmin: parseFloat(1.5),
+        ECmax: parseFloat(2),
+        Tempmin: 50,
+        Tempmax: 100,
+        PHmin: parseFloat(5.5),
+        PHmax: parseFloat(6.5),
+        WTmin: parseFloat(55),
+        WTmax: parseFloat(75),
+        PHupmin: 50,
+        PHupmax: 100,
+        PHdownmin: 50,
+        PHdownmax: 100,
+        NSmin: 50,
+        NSmax: 100,
+        WRmin: 50,
+        WRmax: 100,
+        RSRVRmin: 50,
+        RSRVRmax: 100,
+        WFstate: true,
+      };
+      const updates = {};
+      updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
+      setShowPopupForm(false);
+      localStorage.setItem('selectedPlant', 'Petchay');
+      return update(ref(database), updates);
+    };
+    
+    const setSpinach = () => {
+      const postSpinach = {
+        slctdParam: 'Spinach',
+        RHmin: 50,
+        RHmax: 100,
+        ECmin: 50,
+        ECmax: 100,
+        Tempmin: 50,
+        Tempmax: 100,
+        PHmin: 50,
+        PHmax: 100,
+        WTmin: 50,
+        WTmax: 100,
+        PHupmin: 50,
+        PHupmax: 100,
+        PHdownmin: 50,
+        PHdownmax: 100,
+        NSmin: 50,
+        NSmax: 100,
+        WRmin: 50,
+        WRmax: 100,
+        RSRVRmin: 50,
+        RSRVRmax: 100,
+        WFstate: false,
+      };
+      const updates = {};
+      updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
+      setShowPopupForm(false);
+      localStorage.setItem('selectedPlant', 'Petchay');
+      return update(ref(database), updates);
+    };
+*/}
  
-  const setPetchay = () => {
-    const postPetchay = {
-      slctdParam: 'Petchay',
-      RHmin: 40,
-      RHmax: 70,
-      ECmin: parseFloat(1.5),
-      ECmax: parseFloat(2),
-      Tempmin: 50,
-      Tempmax: 100,
-      PHmin: 50,
-      PHmax: 100,
-      WTmin: parseFloat(55),
-      WTmax: parseFloat(75),
-      PHupmin: parseFloat(5.5),
-      PHupmax: parseFloat(6.5),
-      PHdownmin: 50,
-      PHdownmax: 100,
-      NSmin: 50,
-      NSmax: 100,
-      WRmin: 50,
-      WRmax: 100,
-      RSRVRmin: 50,
-      RSRVRmax: 100,
-      WFstate: true,
-    };
-    const updates = {};
-    updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
-    setSelectedPlant('Petchay');
-    localStorage.setItem('selectedPlant', 'Petchay');
-    setShowPopupForm(false);
-    return update(ref(database), updates);
-  };
-
-  const setSpinach = () => {
-    const postSpinach = {
-      slctdParam: 'Spinach',
-      RHmin: 50,
-      RHmax: 100,
-      ECmin: 50,
-      ECmax: 100,
-      Tempmin: 50,
-      Tempmax: 100,
-      PHmin: 50,
-      PHmax: 100,
-      WTmin: 50,
-      WTmax: 100,
-      PHupmin: 50,
-      PHupmax: 100,
-      PHdownmin: 50,
-      PHdownmax: 100,
-      NSmin: 50,
-      NSmax: 100,
-      WRmin: 50,
-      WRmax: 100,
-      RSRVRmin: 50,
-      RSRVRmax: 100,
-      WFstate: false,
-    };
-    const updates = {};
-    updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
-    setSelectedPlant('Spinach');
-    localStorage.setItem('selectedPlant', 'Spinach');
-    setShowPopupForm(false);
-    return update(ref(database), updates);
-  };
 
   useEffect(() => {
     const body = document.getElementsByTagName('body')[0];
@@ -95,6 +125,7 @@ const Dashboard = () => {
       body.style.backgroundImage = '';
     }
   }, [selectedPlant]);
+
   // Start EC current
   const [ecdata, setecData] = useState([]);
   const [ecmin, setecmin] = useState();
@@ -150,7 +181,7 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, ecmin]);
+  }, [user?.uid, ecmin, ecdata, eccolor]);
   // End EC current
   // Start RH current
   const [rhdata, setrhData] = useState([]);
@@ -207,7 +238,7 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, rhmin]);
+  }, [user?.uid, rhmin , rhdata, rhcolor]);
   // End RH current
 
   // Start Temp current
@@ -271,15 +302,21 @@ const Dashboard = () => {
   // Start PH current 
   const [phdata, setphData] = useState([]);
   const [phmin, setphmin] = useState();
+  const [phmax, setphmax] = useState();
   const [phcolor, setphcolor] = useState();
    useEffect(() => {
         const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/PH`);
       const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHmin`);
+      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/PHmax`);
   
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const PHmin = snapshot.val();
         setphmin(PHmin);
+      });
+      const dbconfCallback1 = onValue(dbconf1, (snapshot) => {
+        const PHmax = snapshot.val();
+        setphmax(PHmax);
       });
   
       const dbRefCallback = onValue(dbRef, (snapshot) => {
@@ -306,7 +343,7 @@ const Dashboard = () => {
         setphData(chartData);
         const currentValue = chartData[chartData.length - 1]?.value;
   
-        if (currentValue > phmin) {
+        if (currentValue > phmin && currentValue < phmax) {
           setphcolor('bg-green-700');
         } else {
           setphcolor('bg-rose-700');
@@ -316,6 +353,7 @@ const Dashboard = () => {
       // Clean up the listeners when component unmounts or when user?.uid changes
       return () => {
         off(dbconf, 'value', dbconfCallback);
+        off(dbconf, 'value', dbconfCallback1);
         off(dbRef, 'value', dbRefCallback);
       };
     };
@@ -323,7 +361,7 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, phmin]);
+  }, [user?.uid, phmin, phcolor, phdata, phmax]);
   // End PH current
 
   // Start Water Temperature
@@ -386,6 +424,7 @@ const Dashboard = () => {
 
   // Start IRPHUP current
   const [phupdata, setphupData] = useState(); 
+  const phuppercentage = parseFloat(((13.4-phupdata)/13.4)*100).toFixed(2);
   const [phupmin, setphupmin] = useState();
   const [phupcolor, setphupcolor] = useState();
   const [phupEmailSent, setPhupEmailSent] = useState(false);
@@ -410,7 +449,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/IRPHUP/Value`);
       const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHupmin`);
-  
+
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const PHUPmin = snapshot.val();
         setphupmin(PHUPmin);
@@ -634,6 +673,7 @@ const [wrEmailSent, setwrEmailSent] = useState(false)
 
 // Start Reservoir current
 const [rsrvrdata, setrsrvrData] = useState(null); 
+const rsrvrpercentage = parseFloat(((10-rsrvrdata)/5.5)*100).toFixed(2);
 const [rsrvrmin, setrsrvrmin] = useState();
 const [rsrvrcolor, setrsrvrcolor] = useState();
 const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
@@ -718,14 +758,14 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   };
   useEffect(() => {
     const fetchData = async () => {
-      const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/WF/Value`);
+      const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/WState/Value`);
       
       const dbRefCallback = onValue(dbRef, (snapshot) => {
         const firebaseData = snapshot.val();
         setwfstate(firebaseData);
       });
 
-        if (wfstate === true ) {
+        if (wfstate >= 9000 ) {
           setwfcolor('bg-green-700');
           setwfData("Active")
           if (wfEmailSent === true){
@@ -761,13 +801,13 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   // START Function to update the grid columns based on the screen size
   const updateGridColumns = () => {
     if (window.innerWidth < 768) {
-      setGridColumns("grid-cols-1 overflow-auto");
+      setGridColumns("grid-cols-1 ");
     } else if (window.innerWidth < 1024) {
-      setGridColumns("grid-cols-2 overflow-auto");
+      setGridColumns("grid-cols-2 ");
     } else if (window.innerWidth < 1200) {
-      setGridColumns("grid-cols-3 overflow-auto");
+      setGridColumns("grid-cols-3");
     }else {
-      setGridColumns("grid-cols-5 overflow-auto");
+      setGridColumns("grid-cols-5 ");
     }
   };
 
@@ -784,61 +824,97 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   // END Function to update the grid columns based on the screen size
   return (
     <>
-      {showPopupForm && <PopupForm onPetchay={setPetchay} onSpinach={setSpinach} />}
+      {/*showPopupForm && <PopupForm onPetchay={setPetchay} onSpinach={setSpinach} />*/}
       <div>
         <div className="bg-gray-200 bg-opacity-50 ">
           <h1 className=" p-8 text-white">Dashboard</h1>
         </div>
+
         <div className="p-8 ">
-          <div className="m-auto  inline-block pt-10 ">
-            <div className={` grid ${gridColumns} gap-8 mx-auto justify-center bg-white bg-opacity-50 p-4 border-2 border-black `} >
-              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow`}>
+            <DashboardBox  className="bg-gray-300 ml-4 px4 bg-opacity-50 overflow-y-auto" width="100%" height="45%" >
+            <div className={` grid ${gridColumns} gap-8 mx-auto justify-center p-4 border-2 border-black `} >
+              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
+                <div className="flex justify-center items-center mb-2">
+                  <RiWaterFlashFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Electric Conductivity: </h3>
                 <p className="text-center px-4">{ECcurrent}</p>
               </div>
               <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <WiHumidity className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Relative Humidity: </h3>
                 <p className="text-center px-4">{RHcurrent}</p>
               </div>
               <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <TbTemperatureCelsius className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Temperature: </h3>
                 <p className="text-center px-4">{Tempcurrent}</p>
               </div>
               <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <img src={pHicon} alt="pH Level Icon" className="h-12 w-12" />
+                </div>
                 <h3 className="text-center px-4">PH Level: </h3>
                 <p className="text-center px-4">{PHcurrent}</p>
               </div>
               <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <FaTemperatureHigh className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Temperature: </h3>
                 <p className="text-center px-4">{WTcurrent}</p>
               </div>
               <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <BsFillArrowUpCircleFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">PH Up Level: </h3>
-                <p className="text-center px-4 py-2">{phupdata}</p>
+                <p className="text-center px-4 py-2">{phuppercentage} %</p>
               </div>
               <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <BsFillArrowDownCircleFill className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">PH Down Level: </h3>
-                <p className="text-center px-4">{phdowndata}</p>
+                <p className="text-center px-4">{phdowndata} cm</p>
               </div>
               <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiFertilizerBag className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Nutrient Soln Level: </h3>
-                <p className="text-center px-4">{nsdata}</p>
+                <p className="text-center px-4">{nsdata} cm</p>
               </div>
               <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiWaterSplash className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Refill Level: </h3>
-                <p className="text-center px-4"> {wrdata}</p>
+                <p className="text-center px-4"> {wrdata} cm</p>
               </div>
               <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <GiWaterTank className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Reservoir Level: </h3>
-                <p className="text-center px-4">{rsrvrdata}</p>  
+                <p className="text-center px-4">{rsrvrpercentage} %</p>  
               </div>
               <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                <div className="flex justify-center items-center mb-2">
+                  <FaWater className="text-5xl" />
+                </div>
                 <h3 className="text-center px-4">Water Flow: </h3>
                 <p className="text-center px-4">{wfdata}</p>
               </div>
             </div>
-          </div>
+            </DashboardBox>
+          
         </div>
+
         <FirebaseData/>
       </div>
     </>

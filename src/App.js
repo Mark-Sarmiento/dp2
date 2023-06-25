@@ -16,11 +16,10 @@ import WTpage from './components/WTpage';
 
 function App() {
   return (
-    <div className='h-screen overflow-y-hidden '>
+    <div className='h-screen overflow-hidden '>
       <AuthContextProvider>
         
         <Routes>
-          
           <Route path='/signin' element={<Signin />} />
         </Routes>
           <Sidebar>

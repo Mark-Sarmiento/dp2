@@ -19,6 +19,7 @@ const Sidebar = ({children}) => {
       name: 'Set Parameters',
       icon: <BsPlusLg />,
     },
+    
     {
       name: 'Sensors',
       icon: <RiPlantFill />,

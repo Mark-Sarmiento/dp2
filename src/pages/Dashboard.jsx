@@ -23,28 +23,8 @@ const Dashboard = () => {
 
   const { user } = UserAuth();
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
-  const [selectedPlant, setSelectedPlant] = useState();
-  useEffect(() => {
-      const fetchData = async () => {
-        const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
-    
-        const dbconfCallback = onValue(dbconf, (snapshot) => {
-          const slctdParam = snapshot.val();
-          setSelectedPlant(slctdParam);
-        });
-    
-      
-    
-        // Clean up the listeners when component unmounts or when user?.uid changes
-        return () => {
-          off(dbconf, 'value', dbconfCallback);
-        };
-      };
-      fetchData();
-      }, [user?.uid, selectedPlant]);
-  
-  
- 
+  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
+
   const setPetchay = () => {
     const postPetchay = {
       slctdParam: 'Petchay',
@@ -72,6 +52,8 @@ const Dashboard = () => {
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
+    setSelectedPlant('Spinach');
+    localStorage.setItem('selectedPlant', 'Petchay');
     setShowPopupForm(false);
     return update(ref(database), updates);
   };
@@ -103,22 +85,39 @@ const Dashboard = () => {
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
+    setSelectedPlant('Spinach');
+    localStorage.setItem('selectedPlant', 'Spinach');
     setShowPopupForm(false);
     return update(ref(database), updates);
   };
 
   useEffect(() => {
-    const body = document.getElementsByTagName('body')[0];
-    if (selectedPlant === 'Spinach') {
-      body.style.backgroundImage = `url(${spinach})`;
-      body.style.backgroundSize = 'cover';
-    } else if (selectedPlant === 'Petchay') {
-      body.style.backgroundImage = `url(${petchay})`;
-      body.style.backgroundSize = 'cover';
-    } else {
-      body.style.backgroundImage = '';
-    }
-  }, [selectedPlant]);
+        const fetchData = async () => {
+        const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
+    
+        const dbconfCallback = onValue(dbconf, (snapshot) => {
+          const slctdParam = snapshot.val();
+          setSelectedPlant(slctdParam);
+        });
+        // Clean up the listeners when component unmounts or when user?.uid changes
+        return () => {
+          off(dbconf, 'value', dbconfCallback);
+        };
+      };
+      fetchData();
+
+      const body = document.getElementsByTagName('body')[0];
+      if (selectedPlant === 'Spinach') {
+        body.style.backgroundImage = `url(${spinach})`;
+        body.style.backgroundSize = 'cover';
+      } else if (selectedPlant === 'Petchay') {
+        body.style.backgroundImage = `url(${petchay})`;
+        body.style.backgroundSize = 'cover';
+      } else {
+        body.style.backgroundImage = '';
+      }
+    }, [user?.uid, selectedPlant]);
+
   // Start EC current
   const [ecdata, setecData] = useState([]);
   const [ecmin, setecmin] = useState();
@@ -174,8 +173,9 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, ecmin, ecdata, eccolor]);
+  }, [user?.uid, ecmin]);
   // End EC current
+
   // Start RH current
   const [rhdata, setrhData] = useState([]);
   const [rhmin, setrhmin] = useState();
@@ -231,7 +231,7 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, rhmin , rhdata, rhcolor]);
+  }, [user?.uid, rhmin ]);
   // End RH current
 
   // Start Temp current
@@ -354,7 +354,7 @@ const Dashboard = () => {
     if (user?.uid) {
       fetchData();
     }
-  }, [user?.uid, phmin, phcolor, phdata, phmax]);
+  }, [user?.uid, phmin,  phmax]);
   // End PH current
 
   // Start Water Temperature
@@ -417,7 +417,7 @@ const Dashboard = () => {
 
   // Start IRPHUP current
   const [phupdata, setphupData] = useState(); 
-  const phuppercentage = parseFloat(((13.4-phupdata)/13.4)*100).toFixed(2);
+  const phuppercentage = parseFloat(((13.4-phupdata)/10.4)*100).toFixed(2);
   const [phupmin, setphupmin] = useState();
   const [phupcolor, setphupcolor] = useState();
   const [phupEmailSent, setPhupEmailSent] = useState(false);
@@ -453,7 +453,7 @@ const Dashboard = () => {
         setphupData(firebaseData);
       });
 
-        if (phupdata > phupmin) {
+        if (phupdata < phupmin) {
           setphupcolor('bg-green-700');
           if (phupEmailSent === true){
             setPhupEmailSent(false);
@@ -480,6 +480,7 @@ const Dashboard = () => {
 
   // Start IRPHDOWN current
   const [phdowndata, setphdownData] = useState(null); 
+  const phdownpercentage = parseFloat(((13.4-phdowndata)/10.4)*100).toFixed(2);
   const [phdownmin, setphdownmin] = useState();
   const [phdowncolor, setphdowncolor] = useState();
   const [phdownEmailSent, setphdownEmailSent] = useState(false);
@@ -515,7 +516,7 @@ const Dashboard = () => {
         setphdownData(firebaseData);
       });
 
-        if (phdowndata > phdownmin) {
+        if (phdowndata < phdownmin) {
           setphdowncolor('bg-green-700');
           if (phdownEmailSent === true){
             setphdownEmailSent(false);
@@ -542,6 +543,7 @@ const Dashboard = () => {
 
   // Start Nutrient Solution Current
   const [nsdata, setnsData] = useState(null); 
+  const nspercentage = parseFloat(((13.4-nsdata)/10.4)*100).toFixed(2);
   const [nsmin, setnsmin] = useState();
   const [nscolor, setnscolor] = useState();
   const [nsEmailSent, setnsEmailSent] = useState(false);
@@ -577,7 +579,7 @@ const Dashboard = () => {
           setnsData(firebaseData);
         });
 
-          if (nsdata > nsmin) {
+          if (nsdata < nsmin) {
             setnscolor('bg-green-700');
             if (nsEmailSent === true){
               setnsEmailSent(false);
@@ -604,6 +606,7 @@ const Dashboard = () => {
 
 // Start Water Refill current
 const [wrdata, setwrData] = useState(null); 
+const wrpercentage = parseFloat(((13.4-wrdata)/10.4)*100).toFixed(2);
 const [wrmin, setwrmin] = useState();
 const [wrcolor, setwrcolor] = useState();
 const [wrEmailSent, setwrEmailSent] = useState(false)
@@ -639,7 +642,7 @@ const [wrEmailSent, setwrEmailSent] = useState(false)
         setwrData(firebaseData);
       });
 
-        if (wrdata > wrmin) {
+        if (wrdata < wrmin) {
           setwrcolor('bg-green-700');
           if (wrEmailSent === true){
             setwrEmailSent(false);
@@ -666,7 +669,7 @@ const [wrEmailSent, setwrEmailSent] = useState(false)
 
 // Start Reservoir current
 const [rsrvrdata, setrsrvrData] = useState(null); 
-const rsrvrpercentage = parseFloat(((13-rsrvrdata)/3)*100).toFixed(2);
+const rsrvrpercentage = parseFloat(((10-rsrvrdata)/5.5)*100).toFixed(2);
 const [rsrvrmin, setrsrvrmin] = useState();
 const [rsrvrcolor, setrsrvrcolor] = useState();
 const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
@@ -691,7 +694,7 @@ const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/IRWATER/Value`);
       const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/RSRVRmin`);
-  
+
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const RSRVRmin = snapshot.val();
         setrsrvrmin(RSRVRmin);
@@ -702,7 +705,7 @@ const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
         setrsrvrData(firebaseData);
       });
 
-        if (rsrvrdata > rsrvrmin) {
+        if (rsrvrdata < rsrvrmin ) {
           setrsrvrcolor('bg-green-700');
           if (rsrvrEmailSent === true){
             setrsrvrEmailSent(false);
@@ -873,21 +876,21 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
                   <BsFillArrowDownCircleFill className="text-5xl" />
                 </div>
                 <h3 className="text-center px-4">PH Down Level: </h3>
-                <p className="text-center px-4">{phdowndata} cm</p>
+                <p className="text-center px-4">{phdownpercentage} %</p>
               </div>
               <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
                 <div className="flex justify-center items-center mb-2">
                   <GiFertilizerBag className="text-5xl" />
                 </div>
                 <h3 className="text-center px-4">Nutrient Soln Level: </h3>
-                <p className="text-center px-4">{nsdata} cm</p>
+                <p className="text-center px-4">{nspercentage} %</p>
               </div>
               <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
                 <div className="flex justify-center items-center mb-2">
                   <GiWaterSplash className="text-5xl" />
                 </div>
                 <h3 className="text-center px-4">Water Refill Level: </h3>
-                <p className="text-center px-4"> {wrdata} cm</p>
+                <p className="text-center px-4"> {wrpercentage} %</p>
               </div>
               <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
                 <div className="flex justify-center items-center mb-2">

@@ -160,12 +160,9 @@ const RHplot = () => {
     <div className="absolute right-4 w-screen h-screen p-10">
 
 
-      <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="45%" style={{ overflow: 'auto' }}>   
-
-      
-
+      <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="auto" >   
         <BoxHeader title="Relative Humidity" subtitle="Realtime Data" sideText={"Latest Value"+currentValue}/>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer className="" width="100%" height={300}>
           
           <AreaChart data={data} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>
             <defs>
@@ -188,7 +185,7 @@ const RHplot = () => {
         </ResponsiveContainer>
       </DashboardBox>
 
-      <DashboardBox className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="35%">
+      <DashboardBox className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="auto">
         <BoxHeader title="Average Data Per Day" />
         <ResponsiveContainer width="100%" height={250}>
           <AreaChart data={averageData} margin={{top: 20,bottom: 20,left: 20,right: 20 }}>

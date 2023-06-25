@@ -40,7 +40,7 @@ const ECpage = () => {
   }, [selectedPlant]);
   // END Retain the background even when reloading the page
   return (
-    <div className='overflow-y-hidden'>
+    <div className='m-auto chart-container'>
       <h1 className="pt-6 pl-4 bg-white bg-opacity-50 p-8">Electric Conductivity Graph</h1>
       <div className="m-auto w-screen h-screen">
         <div className='relative'>

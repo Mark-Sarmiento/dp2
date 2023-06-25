@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AddUnit = () => {
   const { user } = UserAuth();
-  const [showPopupForm, setShowPopupForm] = useState(true);
+  const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm') || true);
   const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
   const navigate = useNavigate();
 

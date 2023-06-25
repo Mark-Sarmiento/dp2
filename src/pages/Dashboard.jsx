@@ -14,7 +14,10 @@ import { FaTemperatureHigh, FaWater } from 'react-icons/fa';
 import {GiFertilizerBag, GiWaterSplash, GiWaterTank} from 'react-icons/gi'
 import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
 import pHicon from "../assets/pHicon.png"
+<<<<<<< HEAD
 import DashboardBox from "../components/content/DashboardBox";
+=======
+>>>>>>> 3dafe8a0c5d4f46b8b91492105164919e6d3f2d6
 
 emailjs.init("kTo0FMoCg9hTzN5Hn");
 
@@ -23,8 +26,12 @@ const Dashboard = () => {
 
   const { user } = UserAuth();
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
+<<<<<<< HEAD
   const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant'));
   {/*
+=======
+  const [selectedPlant, setSelectedPlant] = useState();
+>>>>>>> 3dafe8a0c5d4f46b8b91492105164919e6d3f2d6
   useEffect(() => {
       const fetchData = async () => {
         const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
@@ -41,6 +48,7 @@ const Dashboard = () => {
           off(dbconf, 'value', dbconfCallback);
         };
       };
+<<<<<<< HEAD
       if (user?.uid) {
       fetchData();
       }
@@ -112,6 +120,74 @@ const Dashboard = () => {
     };
 */}
  
+=======
+      fetchData();
+      }, [user?.uid, selectedPlant]);
+  
+  
+ 
+  const setPetchay = () => {
+    const postPetchay = {
+      slctdParam: 'Petchay',
+      RHmin: 40,
+      RHmax: 70,
+      ECmin: parseFloat(1.5),
+      ECmax: parseFloat(2),
+      Tempmin: 50,
+      Tempmax: 100,
+      PHmin: parseFloat(5.5),
+      PHmax: parseFloat(6.5),
+      WTmin: parseFloat(55),
+      WTmax: parseFloat(75),
+      PHupmin: 50,
+      PHupmax: 100,
+      PHdownmin: 50,
+      PHdownmax: 100,
+      NSmin: 50,
+      NSmax: 100,
+      WRmin: 50,
+      WRmax: 100,
+      RSRVRmin: 50,
+      RSRVRmax: 100,
+      WFstate: true,
+    };
+    const updates = {};
+    updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
+    setShowPopupForm(false);
+    return update(ref(database), updates);
+  };
+
+  const setSpinach = () => {
+    const postSpinach = {
+      slctdParam: 'Spinach',
+      RHmin: 50,
+      RHmax: 100,
+      ECmin: 50,
+      ECmax: 100,
+      Tempmin: 50,
+      Tempmax: 100,
+      PHmin: 50,
+      PHmax: 100,
+      WTmin: 50,
+      WTmax: 100,
+      PHupmin: 50,
+      PHupmax: 100,
+      PHdownmin: 50,
+      PHdownmax: 100,
+      NSmin: 50,
+      NSmax: 100,
+      WRmin: 50,
+      WRmax: 100,
+      RSRVRmin: 50,
+      RSRVRmax: 100,
+      WFstate: false,
+    };
+    const updates = {};
+    updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
+    setShowPopupForm(false);
+    return update(ref(database), updates);
+  };
+>>>>>>> 3dafe8a0c5d4f46b8b91492105164919e6d3f2d6
 
   useEffect(() => {
     const body = document.getElementsByTagName('body')[0];
@@ -831,8 +907,13 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
         </div>
 
         <div className="p-8 ">
+<<<<<<< HEAD
             <DashboardBox  className="bg-gray-300 ml-4 px4 bg-opacity-50 overflow-y-auto" width="100%" height="45%" >
             <div className={` grid ${gridColumns} gap-8 mx-auto justify-center p-4 border-2 border-black `} >
+=======
+          <div className="m-auto  inline-block pt-10 ">
+            <div className={` grid ${gridColumns} gap-8 mx-auto justify-center bg-white bg-opacity-50 p-4 border-2 border-black `} >
+>>>>>>> 3dafe8a0c5d4f46b8b91492105164919e6d3f2d6
               <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
                 <div className="flex justify-center items-center mb-2">
                   <RiWaterFlashFill className="text-5xl" />

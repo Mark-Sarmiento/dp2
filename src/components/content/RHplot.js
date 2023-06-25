@@ -159,7 +159,11 @@ const RHplot = () => {
   return (
     <div className="absolute right-4 w-screen h-screen p-10">
 
+<<<<<<< HEAD
       <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="45%" style={{ overflow: 'auto' }}>   
+=======
+      <DashboardBox  className="bg-gray-300 ml-4 px4 " width="calc(87% - 100px)" height="45%">   
+>>>>>>> 3dafe8a0c5d4f46b8b91492105164919e6d3f2d6
         <BoxHeader title="Relative Humidity" subtitle="Realtime Data" sideText={"Latest Value"+currentValue}/>
         <ResponsiveContainer width="100%" height={300}>
           

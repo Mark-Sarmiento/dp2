@@ -88,7 +88,7 @@ const Tempplot = () => {
             for (let time in children) {
               if (children.hasOwnProperty(time)) {
                 const value = children[time].Value;
-                const formattedTime = time.slice(0, -3); // Remove the last 3 characters (seconds)
+                const formattedTime = time.toString().slice(0, -3); // Remove the last 3 characters (seconds)
 
                 // Add data point to chart data
                 const dataPoint = {
@@ -179,7 +179,7 @@ const Tempplot = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
-            <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={data.length - maxData}/>
+            <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={Math.max(0, data.length - maxData)}/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
@@ -193,7 +193,7 @@ const Tempplot = () => {
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
-            <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={averageData.length - 7}/>
+            <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={Math.max(0, averageData.length - 7)}/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>

@@ -20,11 +20,11 @@ function App() {
       <AuthContextProvider>
         
         <Routes>
+          <Route path='/' element={<Home />} />
           <Route path='/signin' element={<Signin />} />
         </Routes>
           <Sidebar>
             <Routes>
-              <Route path='/' element={<Home />} />
               <Route path="/dashboard" element={<Protected> <Dashboard/> </Protected>}/>
               <Route path="/setparameters" element={<Protected> <AddUnit/> </Protected>}/>
               <Route path="/sensors/humidity" element={<Protected> <RHpage/> </Protected>}/>

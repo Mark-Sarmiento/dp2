@@ -15,6 +15,8 @@ import {GiFertilizerBag, GiWaterSplash, GiWaterTank} from 'react-icons/gi'
 import { BsFillArrowDownCircleFill, BsFillArrowUpCircleFill } from "react-icons/bs";
 import pHicon from "../assets/pHicon.png"
 import DashboardBox from "../components/content/DashboardBox";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 emailjs.init("kTo0FMoCg9hTzN5Hn");
 
@@ -22,74 +24,8 @@ emailjs.init("kTo0FMoCg9hTzN5Hn");
 const Dashboard = () => {
 
   const { user } = UserAuth();
-  const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm'));
-  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
+  const [selectedPlant, setSelectedPlant] = useState();
 
-  const setPetchay = () => {
-    const postPetchay = {
-      slctdParam: 'Petchay',
-      RHmin: 40,
-      RHmax: 70,
-      ECmin: parseFloat(1.5),
-      ECmax: parseFloat(2),
-      Tempmin: 50,
-      Tempmax: 100,
-      PHmin: parseFloat(5.5),
-      PHmax: parseFloat(6.5),
-      WTmin: parseFloat(55),
-      WTmax: parseFloat(75),
-      PHupmin: 50,
-      PHupmax: 100,
-      PHdownmin: 50,
-      PHdownmax: 100,
-      NSmin: 50,
-      NSmax: 100,
-      WRmin: 50,
-      WRmax: 100,
-      RSRVRmin: 50,
-      RSRVRmax: 100,
-      WFstate: true,
-    };
-    const updates = {};
-    updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
-    setSelectedPlant('Spinach');
-    localStorage.setItem('selectedPlant', 'Petchay');
-    setShowPopupForm(false);
-    return update(ref(database), updates);
-  };
-
-  const setSpinach = () => {
-    const postSpinach = {
-      slctdParam: 'Spinach',
-      RHmin: 50,
-      RHmax: 100,
-      ECmin: 50,
-      ECmax: 100,
-      Tempmin: 50,
-      Tempmax: 100,
-      PHmin: 50,
-      PHmax: 100,
-      WTmin: 50,
-      WTmax: 100,
-      PHupmin: 50,
-      PHupmax: 100,
-      PHdownmin: 50,
-      PHdownmax: 100,
-      NSmin: 50,
-      NSmax: 100,
-      WRmin: 50,
-      WRmax: 100,
-      RSRVRmin: 50,
-      RSRVRmax: 100,
-      WFstate: false,
-    };
-    const updates = {};
-    updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
-    setSelectedPlant('Spinach');
-    localStorage.setItem('selectedPlant', 'Spinach');
-    setShowPopupForm(false);
-    return update(ref(database), updates);
-  };
 
   useEffect(() => {
         const fetchData = async () => {
@@ -421,6 +357,7 @@ const Dashboard = () => {
   const [phupmin, setphupmin] = useState();
   const [phupcolor, setphupcolor] = useState();
   const [phupEmailSent, setPhupEmailSent] = useState(false);
+  const phupPopMessage = 'pH UP solution is running low!';
   //Send warning message for pH up level 
   const SWEphuplowlevel = async () => {
     const templateParams = {
@@ -461,8 +398,14 @@ const Dashboard = () => {
         } else {
           setphupcolor('bg-rose-700');
           if (phupEmailSent === false){
-            //SWEphuplowlevel();
-            setPhupEmailSent(true);
+            if (phupdata != null){
+              //SWEphuplowlevel();
+              toast.warning(phupPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 3 seconds
+              });
+              setPhupEmailSent(true);
+            }
           }
         }
       // Clean up the listeners when component unmounts or when user?.uid changes
@@ -484,6 +427,7 @@ const Dashboard = () => {
   const [phdownmin, setphdownmin] = useState();
   const [phdowncolor, setphdowncolor] = useState();
   const [phdownEmailSent, setphdownEmailSent] = useState(false);
+  const phdownPopMessage = 'pH Down solution is running low!';
   //Send warning message for pH down level 
   const SWEphdownlowlevel = async () => {
     const templateParams = {
@@ -524,8 +468,14 @@ const Dashboard = () => {
         } else {
           setphdowncolor('bg-rose-700');
           if (phdownEmailSent === false){
-            //SWEphdownlowlevel();
-            setphdownEmailSent(true);
+            if (phdowndata != null){
+              //SWEphdownlowlevel();
+              toast.warning(phdownPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 3 seconds
+              });
+              setphdownEmailSent(true);
+            }
           }
         }
       // Clean up the listeners when component unmounts or when user?.uid changes
@@ -547,6 +497,7 @@ const Dashboard = () => {
   const [nsmin, setnsmin] = useState();
   const [nscolor, setnscolor] = useState();
   const [nsEmailSent, setnsEmailSent] = useState(false);
+  const nsPopMessage = 'Nutrient solution is running low!';
     //Send warning message for Nutrient Solution level 
     const SWEnslowlevel = async () => {
       const templateParams = {
@@ -587,8 +538,14 @@ const Dashboard = () => {
           } else {
             setnscolor('bg-rose-700');
             if (nsEmailSent === false){
+               if (nsdata != null){
               //SWEnslowlevel();
+              toast.warning(nsPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 10 seconds
+              });
               setnsEmailSent(true);
+            }
             }
           }
         // Clean up the listeners when component unmounts or when user?.uid changes
@@ -610,6 +567,7 @@ const wrpercentage = parseFloat(((13.4-wrdata)/10.4)*100).toFixed(2);
 const [wrmin, setwrmin] = useState();
 const [wrcolor, setwrcolor] = useState();
 const [wrEmailSent, setwrEmailSent] = useState(false)
+const wrPopMessage = 'Water refill container is running low!';
 //Send warning message for Water Refill level 
   const SWEwrlowlevel = async () => {
     const templateParams = {
@@ -650,8 +608,14 @@ const [wrEmailSent, setwrEmailSent] = useState(false)
         } else {
           setwrcolor('bg-rose-700');
           if (wrEmailSent === false){
-            //SWEwrlowlevel();
-            setwrEmailSent(true);
+            if (wrdata != null){
+              //SWEwrlowlevel();
+              toast.warning(wrPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 10 seconds
+              });
+              setwrEmailSent(true);
+            }
           }
         }
       // Clean up the listeners when component unmounts or when user?.uid changes
@@ -673,6 +637,7 @@ const rsrvrpercentage = parseFloat(((10-rsrvrdata)/5.5)*100).toFixed(2);
 const [rsrvrmin, setrsrvrmin] = useState();
 const [rsrvrcolor, setrsrvrcolor] = useState();
 const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
+const rsrvrPopMessage = 'Water Reservoir is running low!';
   //Send warning message for Reservoir level 
   const SWErsrvrlowlevel = async () => {
     const templateParams = {
@@ -713,8 +678,14 @@ const [rsrvrEmailSent, setrsrvrEmailSent] = useState(false);
         } else {
           setrsrvrcolor('bg-rose-700');
           if (rsrvrEmailSent === false){
-            //SWErsrvrlowlevel();
-            setrsrvrEmailSent(true);
+            if (rsrvrdata != null){
+              //SWErsrvrlowlevel();
+              toast.warning(rsrvrPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 10 seconds
+              });
+              setrsrvrEmailSent(true);
+            }
           }
         }
       // Clean up the listeners when component unmounts or when user?.uid changes
@@ -735,6 +706,7 @@ const [wfdata, setwfData] = useState();
 const [wfstate, setwfstate] = useState(); 
 const [wfcolor, setwfcolor] = useState()
 const [wfEmailSent, setwfEmailSent] = useState (false)
+const wfPopMessage = 'Water is not FLOWING!';
 //Send warning message for Reservoir level 
   const SWEwffalse = async () => {
     const templateParams = {
@@ -771,8 +743,14 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
           setwfcolor('bg-rose-700');
           setwfData("Inactive")
           if (wfEmailSent === false){
-            //SWEwffalse();
-            setwfEmailSent(true);
+            if (wfstate != null){
+              //SWEwflowlevel();
+              toast.warning(wfPopMessage, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 10000, // Close the pop-up after 3 seconds
+              });
+              setwfEmailSent(true);
+            }
           }
         }
       // Clean up the listeners when component unmounts or when user?.uid changes
@@ -820,7 +798,7 @@ const [wfEmailSent, setwfEmailSent] = useState (false)
   // END Function to update the grid columns based on the screen size
   return (
     <>
-      {showPopupForm && <PopupForm onPetchay={setPetchay} onSpinach={setSpinach} />}
+      
       <div>
         <div className="bg-gray-200 bg-opacity-50 ">
           <h1 className=" p-8 text-white">Dashboard</h1>

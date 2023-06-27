@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { database } from '../firebase';
-import { ref, update } from 'firebase/database';
+import { ref, update, onValue, off } from 'firebase/database';
 import { UserAuth } from '../context/AuthContext';
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const AddUnit = () => {
   const { user } = UserAuth();
   const [showPopupForm, setShowPopupForm] = useState(localStorage.getItem('showPopupForm') || true);
-  const [selectedPlant, setSelectedPlant] = useState(localStorage.getItem('selectedPlant') || '');
+  const [selectedPlant, setSelectedPlant] = useState();
   const navigate = useNavigate();
 
   const setPetchay = () => {
@@ -36,7 +36,6 @@ const AddUnit = () => {
       WRmax:3,
       RSRVRmin: 7,
       RSRVRmax: 4,
-      WFstate: true,
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postPetchay;
@@ -70,7 +69,6 @@ const AddUnit = () => {
       WRmax:3,
       RSRVRmin: 7,
       RSRVRmax: 4,
-      WFstate: false,
     };
     const updates = {};
     updates[`/Users/${user?.uid}/ESP1/Params`] = postSpinach;
@@ -82,21 +80,39 @@ const AddUnit = () => {
   };
 
   useEffect(() => {
-    const body = document.getElementsByTagName('body')[0];
-    if (selectedPlant === 'Spinach') {
-      body.style.backgroundImage = `url(${spinach})`;
-      body.style.backgroundSize = 'cover';
-    } else if (selectedPlant === 'Petchay') {
-      body.style.backgroundImage = `url(${petchay})`;
-      body.style.backgroundSize = 'cover';
-    } else {
-      body.style.backgroundImage = '';
-    }
-  }, [selectedPlant]);
+        const fetchData = async () => {
+        const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
+    
+        const dbconfCallback = onValue(dbconf, (snapshot) => {
+          const slctdParam = snapshot.val();
+          setSelectedPlant(slctdParam);
+        });
+        // Clean up the listeners when component unmounts or when user?.uid changes
+        return () => {
+          off(dbconf, 'value', dbconfCallback);
+        };
+      };
+      fetchData();
+
+      const body = document.getElementsByTagName('body')[0];
+      if (selectedPlant === 'Spinach') {
+        body.style.backgroundImage = `url(${spinach})`;
+        body.style.backgroundSize = 'cover';
+      } else if (selectedPlant === 'Petchay') {
+        body.style.backgroundImage = `url(${petchay})`;
+        body.style.backgroundSize = 'cover';
+      } else {
+        body.style.backgroundImage = '';
+      }
+    }, [user?.uid, selectedPlant]);
 
   return (
     <div className='bg-opacity-50'>
-      {showPopupForm && <PopupForm onPetchay={setPetchay} onSpinach={setSpinach} />}
+      {showPopupForm && <PopupForm
+          onPetchay={setPetchay}
+          onSpinach={setSpinach}
+        >
+        </PopupForm>}
     </div>
   );
 };

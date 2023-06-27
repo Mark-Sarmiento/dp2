@@ -7,7 +7,7 @@ import homebg2 from '../assets/homepage2.mp4';
 const Home = () => {
 
   return (
-    <div className='w-screen h-screen relative '>
+    <div className='w-screen h-screen relative overflow-hidden'>
       <div className='flex justify-between items-center h-20 px-4 absolute z-10 text-white'>
         <h1>Nutriculture</h1>
       </div>

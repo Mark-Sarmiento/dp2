@@ -13,6 +13,8 @@ import ECpage from './components/ECpage';
 import Temppage from './components/Temppage';
 import PHpage from './components/PHpage';
 import WTpage from './components/WTpage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
           </Sidebar>
         
       </AuthContextProvider>
+      <ToastContainer/>
     </div>
   );
 }

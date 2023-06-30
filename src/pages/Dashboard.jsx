@@ -6,6 +6,7 @@ import { ref, onValue, off, update } from "firebase/database";
 import emailjs from "emailjs-com";
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
+import customsetbg from '../assets/customsetbg.jpg';
 import PopupForm from '../context/PopupForm';
 import { RiWaterFlashFill} from 'react-icons/ri';
 import { WiHumidity } from 'react-icons/wi';
@@ -50,7 +51,8 @@ const Dashboard = () => {
         body.style.backgroundImage = `url(${petchay})`;
         body.style.backgroundSize = 'cover';
       } else {
-        body.style.backgroundImage = '';
+        body.style.backgroundImage = `url(${customsetbg})`;
+        body.style.backgroundSize = 'cover';
       }
     }, [user?.uid, selectedPlant]);
 
@@ -773,122 +775,124 @@ const wfPopMessage = 'Water is not FLOWING!';
   const [gridColumns, setGridColumns] = useState("grid-cols-5");
 
   // START Function to update the grid columns based on the screen size
-  const updateGridColumns = () => {
-    if (window.innerWidth < 768) {
-      setGridColumns("grid-cols-1 ");
-    } else if (window.innerWidth < 1024) {
-      setGridColumns("grid-cols-2 ");
-    } else if (window.innerWidth < 1200) {
-      setGridColumns("grid-cols-3");
-    }else {
-      setGridColumns("grid-cols-5 ");
-    }
+  {/*
+*/}
+const updateGridColumns = () => {
+  if (window.innerWidth < 655) {
+    setGridColumns("grid-cols-1 ");
+  } else if (window.innerWidth < 938) {
+    setGridColumns("grid-cols-2 ");
+  } else if (window.innerWidth < 1200) {
+    setGridColumns("grid-cols-3");
+  }else {
+    setGridColumns("grid-cols-5 ");
+  }
+};
+useEffect(() => {
+  // Update grid columns when the component mounts
+  updateGridColumns();
+  // Event listener to update grid columns on window resize
+  window.addEventListener("resize", updateGridColumns);
+  // Cleanup the event listener when the component unmounts
+  return () => {
+    window.removeEventListener("resize", updateGridColumns);
   };
+}, []);
+// END Function to update the grid columns based on the screen size
 
-  useEffect(() => {
-    // Update grid columns when the component mounts
-    updateGridColumns();
-    // Event listener to update grid columns on window resize
-    window.addEventListener("resize", updateGridColumns);
-    // Cleanup the event listener when the component unmounts
-    return () => {
-      window.removeEventListener("resize", updateGridColumns);
-    };
-  }, []);
-  // END Function to update the grid columns based on the screen size
   return (
     <>
-      
-      <div>
-        <div className="bg-gray-200 bg-opacity-50 ">
+      <div className="h-screen w-full right-0 ">
+        <div className=" top-0 right-0 left-0 bg-gray-200 bg-opacity-50 ">
           <h1 className=" p-8 text-white">Dashboard</h1>
         </div>
 
-        <div className="p-8 ">
-            <DashboardBox  className="bg-gray-300 ml-4 px4 bg-opacity-50 overflow-y-auto" width="100%" height="45%" >
-            <div className={` grid ${gridColumns} gap-8 mx-auto justify-center p-4 border-2 border-black `} >
-              <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
-                <div className="flex justify-center items-center mb-2">
-                  <RiWaterFlashFill className="text-5xl" />
+        <div className="p-8  h-full pb-32">
+            <DashboardBox  className=" bg-gray-300 ml-4  bg-opacity-50  h-full w-full border-2 border-black"  >
+              <div className={` grid ${gridColumns}  gap-8 mx-auto   justify-center  p-4  h-full overflow-auto`} >
+                <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
+                  <div className="flex justify-center items-center mb-2">
+                    <RiWaterFlashFill className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Electric Conductivity: </h3>
+                  <p className="text-center px-4">{ECcurrent}</p>
                 </div>
-                <h3 className="text-center px-4">Electric Conductivity: </h3>
-                <p className="text-center px-4">{ECcurrent}</p>
-              </div>
-              <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <WiHumidity className="text-5xl" />
+                <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <WiHumidity className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Relative Humidity: </h3>
+                  <p className="text-center px-4">{RHcurrent}</p>
                 </div>
-                <h3 className="text-center px-4">Relative Humidity: </h3>
-                <p className="text-center px-4">{RHcurrent}</p>
-              </div>
-              <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <TbTemperatureCelsius className="text-5xl" />
+                <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <TbTemperatureCelsius className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Temperature: </h3>
+                  <p className="text-center px-4">{Tempcurrent}</p>
                 </div>
-                <h3 className="text-center px-4">Temperature: </h3>
-                <p className="text-center px-4">{Tempcurrent}</p>
-              </div>
-              <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <img src={pHicon} alt="pH Level Icon" className="h-12 w-12" />
+                <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <img src={pHicon} alt="pH Level Icon" className="h-12 w-12" />
+                  </div>
+                  <h3 className="text-center px-4">PH Level: </h3>
+                  <p className="text-center px-4">{PHcurrent}</p>
                 </div>
-                <h3 className="text-center px-4">PH Level: </h3>
-                <p className="text-center px-4">{PHcurrent}</p>
-              </div>
-              <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <FaTemperatureHigh className="text-5xl" />
+                <div className={`${wtcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <FaTemperatureHigh className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Water Temperature: </h3>
+                  <p className="text-center px-4">{WTcurrent}</p>
                 </div>
-                <h3 className="text-center px-4">Water Temperature: </h3>
-                <p className="text-center px-4">{WTcurrent}</p>
-              </div>
-              <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <BsFillArrowUpCircleFill className="text-5xl" />
+                <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <BsFillArrowUpCircleFill className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">PH Up Level: </h3>
+                  <p className="text-center px-4 py-2">{phuppercentage} %</p>
                 </div>
-                <h3 className="text-center px-4">PH Up Level: </h3>
-                <p className="text-center px-4 py-2">{phuppercentage} %</p>
-              </div>
-              <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <BsFillArrowDownCircleFill className="text-5xl" />
+                <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <BsFillArrowDownCircleFill className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">PH Down Level: </h3>
+                  <p className="text-center px-4">{phdownpercentage} %</p>
                 </div>
-                <h3 className="text-center px-4">PH Down Level: </h3>
-                <p className="text-center px-4">{phdownpercentage} %</p>
-              </div>
-              <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <GiFertilizerBag className="text-5xl" />
+                <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <GiFertilizerBag className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Nutrient Soln Level: </h3>
+                  <p className="text-center px-4">{nspercentage} %</p>
                 </div>
-                <h3 className="text-center px-4">Nutrient Soln Level: </h3>
-                <p className="text-center px-4">{nspercentage} %</p>
-              </div>
-              <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <GiWaterSplash className="text-5xl" />
+                <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <GiWaterSplash className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Water Refill Level: </h3>
+                  <p className="text-center px-4"> {wrpercentage} %</p>
                 </div>
-                <h3 className="text-center px-4">Water Refill Level: </h3>
-                <p className="text-center px-4"> {wrpercentage} %</p>
-              </div>
-              <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <GiWaterTank className="text-5xl" />
+                <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <GiWaterTank className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Reservoir Level: </h3>
+                  <p className="text-center px-4">{rsrvrpercentage} %</p>  
                 </div>
-                <h3 className="text-center px-4">Reservoir Level: </h3>
-                <p className="text-center px-4">{rsrvrpercentage} %</p>  
-              </div>
-              <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
-                <div className="flex justify-center items-center mb-2">
-                  <FaWater className="text-5xl" />
+                <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
+                  <div className="flex justify-center items-center mb-2">
+                    <FaWater className="text-5xl" />
+                  </div>
+                  <h3 className="text-center px-4">Water Flow: </h3>
+                  <p className="text-center px-4">{wfdata}</p>
                 </div>
-                <h3 className="text-center px-4">Water Flow: </h3>
-                <p className="text-center px-4">{wfdata}</p>
               </div>
-            </div>
             </DashboardBox>
-          
         </div>
-          <FirebaseData/>
+          <div className="fixed bottom-0">
+            <FirebaseData  />
+          </div>
       </div>
     </>
     );

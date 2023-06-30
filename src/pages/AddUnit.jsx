@@ -79,6 +79,49 @@ const AddUnit = () => {
     return update(ref(database), updates);
   };
 
+  const cancelPopupForm = () =>{
+    setShowPopupForm(false);
+    setTimeout(() => navigate('/dashboard'), 1000);
+  }
+
+  const [param1, setparam1] = useState('')
+  const setCustom = () => {
+
+  const handleInputChange = (event) => {
+    setparam1(event.target.value);
+  };
+
+  const saveCustomParam = () => {
+    const postCustom = {
+      slctdParam: param1,
+    };
+
+    const updates = {};
+    updates[`/Users/${user?.uid}/ESP1/Params`] = postCustom;
+    setSelectedPlant(param1);
+    localStorage.setItem('selectedPlant', param1);
+    setShowPopupForm(false);
+    setTimeout(() => navigate('/dashboard'), 1000);
+    return update(ref(database), updates);
+  };
+
+  return (
+    <>
+      <div className='bg-gray-700'>
+        <div className='text-white'>
+          <input
+            type='text'
+            id='slctdParam'
+            value={param1}
+            onChange={handleInputChange}
+          />
+          <button onClick={saveCustomParam}>Save</button>
+        </div>
+      </div>
+    </>
+  );
+  }
+
   useEffect(() => {
         const fetchData = async () => {
         const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
@@ -111,6 +154,8 @@ const AddUnit = () => {
       {showPopupForm && <PopupForm
           onPetchay={setPetchay}
           onSpinach={setSpinach}
+          onCancel={cancelPopupForm}
+          onCustom={setCustom}
         >
         </PopupForm>}
     </div>

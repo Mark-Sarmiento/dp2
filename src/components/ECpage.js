@@ -3,6 +3,7 @@ import {database} from '../firebase';
 import { ref, onValue, off } from "firebase/database";
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
+import customsetbg from '../assets/customsetbg.jpg';
 import { UserAuth } from '../context/AuthContext.js';
 import ECplot from './content/ECplot';
 
@@ -35,7 +36,8 @@ const ECpage = () => {
       body.style.backgroundImage = `url(${petchay})`;
       body.style.backgroundSize = 'cover';
     } else {
-      body.style.backgroundImage = '';
+      body.style.backgroundImage = `url(${customsetbg})`;
+      body.style.backgroundSize = 'cover';
     }
   }, [selectedPlant]);
   // END Retain the background even when reloading the page

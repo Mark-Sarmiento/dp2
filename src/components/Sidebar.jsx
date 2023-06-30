@@ -116,7 +116,7 @@ const Sidebar = ({children}) => {
 
                 {/* Render the submenu items */}
                 {submenuOpen && item.submenu && (
-                  <div className={`ml-6 mt-2`}>
+                  <div className={`ml-6 mt-2 `}>
                     {item.submenuItems.map((subItem, subIndex) => (
                       <NavLink
                         key={subIndex}
@@ -144,7 +144,7 @@ const Sidebar = ({children}) => {
         {/* Render the children components */}
         
         <Outlet />
-        <div className='inline-flex '>
+        <div className='inline-flex w-fit'>
           {children}
         </div>
         

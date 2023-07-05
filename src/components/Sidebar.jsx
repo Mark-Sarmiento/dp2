@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserAuth } from '../context/AuthContext';
 import { RiDashboardFill, RiPlantFill, RiLogoutBoxRLine } from 'react-icons/ri';
 import { BsArrowLeftShort, BsPlusLg, BsChevronDown } from 'react-icons/bs';
@@ -6,7 +6,32 @@ import { NavLink,  Outlet,  HashRouter } from 'react-router-dom';
 
 const Sidebar = ({children}) => {
   const { logOut, user } = UserAuth();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState( true);
+
+
+  // START Function to update the grid columns based on the screen size
+  
+  const updateSidebar = () => {
+    if (window.innerWidth < 1210) {
+      setOpen(false)
+    }else{
+      setOpen(true)
+    };
+  }
+    useEffect(() => {
+      // Update grid columns when the component mounts
+      updateSidebar();
+      // Event listener to update grid columns on window resize
+      window.addEventListener("resize", updateSidebar);
+      // Cleanup the event listener when the component unmounts
+      return () => {
+        window.removeEventListener("resize", updateSidebar);
+      };
+    }, []);
+  
+// END Function to update the grid columns based on the screen size
+
+
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const menuItem = [
     {
@@ -143,8 +168,8 @@ const Sidebar = ({children}) => {
 
         {/* Render the children components */}
         
-        <Outlet />
         <div className='inline-flex w-fit'>
+          <Outlet />
           {children}
         </div>
         

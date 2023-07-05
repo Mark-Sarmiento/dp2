@@ -21,7 +21,7 @@ function App() {
     <div className=' overflow-hidden '>
       <AuthContextProvider>
         
-        <Routes>
+        <Routes >
           <Route path='/' element={<Home />} />
           <Route path='/signin' element={<Signin />} />
         </Routes>

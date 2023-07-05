@@ -156,6 +156,8 @@ const RHplot = () => {
 
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
+
+
   return (
     <div className="absolute right-4 w-screen h-screen p-10">
 

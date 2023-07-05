@@ -11,8 +11,7 @@ const RHpage = () => {
   const {user} = UserAuth();
   // START Retain the background even when reloading the page
   const [selectedPlant, setSelectedPlant] = useState();
- 
-      useEffect(() => {
+  useEffect(() => {
         const fetchData = async () => {
         const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/slctdParam`);
     
@@ -28,20 +27,24 @@ const RHpage = () => {
       fetchData();
 
       const body = document.getElementsByTagName('body')[0];
-      if (selectedPlant === 'Spinach') {
-        body.style.backgroundImage = `url(${spinach})`;
-        body.style.backgroundSize = 'cover';
-      } else if (selectedPlant === 'Petchay') {
-        body.style.backgroundImage = `url(${petchay})`;
-        body.style.backgroundSize = 'cover';
-      } else {
-        body.style.backgroundImage = `url(${customsetbg})`;
-        body.style.backgroundSize = 'cover';
+      if(user != null){
+        if (selectedPlant === 'Spinach') {
+          body.style.backgroundImage = `url(${spinach})`;
+          body.style.backgroundSize = 'cover';
+        } else if (selectedPlant === 'Petchay') {
+          body.style.backgroundImage = `url(${petchay})`;
+          body.style.backgroundSize = 'cover';
+        } else {
+          body.style.backgroundImage = `url(${customsetbg})`;
+          body.style.backgroundSize = 'cover';
+        }
+      }else{
+        body.style.backgroundImage = ``;
       }
-    }, [user?.uid, selectedPlant]);
+    }, [user, selectedPlant]);
   // END Retain the background even when reloading the page
   return (
-    <div className=' m-auto chart-container'>
+    <div className=' relative  overflow-y-auto'>
       <h1 className="pt-6 pl-4 bg-white bg-opacity-50 p-8">Relative Humidity Graph</h1>
       <div className=" m-auto w-screen h-screen">
         <div className='relative'>

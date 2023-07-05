@@ -44,17 +44,21 @@ const Dashboard = () => {
       fetchData();
 
       const body = document.getElementsByTagName('body')[0];
-      if (selectedPlant === 'Spinach') {
-        body.style.backgroundImage = `url(${spinach})`;
-        body.style.backgroundSize = 'cover';
-      } else if (selectedPlant === 'Petchay') {
-        body.style.backgroundImage = `url(${petchay})`;
-        body.style.backgroundSize = 'cover';
-      } else {
-        body.style.backgroundImage = `url(${customsetbg})`;
-        body.style.backgroundSize = 'cover';
+      if(user != null){
+        if (selectedPlant === 'Spinach') {
+          body.style.backgroundImage = `url(${spinach})`;
+          body.style.backgroundSize = 'cover';
+        } else if (selectedPlant === 'Petchay') {
+          body.style.backgroundImage = `url(${petchay})`;
+          body.style.backgroundSize = 'cover';
+        } else {
+          body.style.backgroundImage = `url(${customsetbg})`;
+          body.style.backgroundSize = 'cover';
+        }
+      }else{
+        body.style.backgroundImage = ``;
       }
-    }, [user?.uid, selectedPlant]);
+    }, [user, selectedPlant]);
 
   // Start EC current
   const [ecdata, setecData] = useState([]);
@@ -775,29 +779,28 @@ const wfPopMessage = 'Water is not FLOWING!';
   const [gridColumns, setGridColumns] = useState("grid-cols-5");
 
   // START Function to update the grid columns based on the screen size
-  {/*
-*/}
-const updateGridColumns = () => {
-  if (window.innerWidth < 655) {
-    setGridColumns("grid-cols-1 ");
-  } else if (window.innerWidth < 938) {
-    setGridColumns("grid-cols-2 ");
-  } else if (window.innerWidth < 1200) {
-    setGridColumns("grid-cols-3");
-  }else {
-    setGridColumns("grid-cols-5 ");
-  }
-};
-useEffect(() => {
-  // Update grid columns when the component mounts
-  updateGridColumns();
-  // Event listener to update grid columns on window resize
-  window.addEventListener("resize", updateGridColumns);
-  // Cleanup the event listener when the component unmounts
-  return () => {
-    window.removeEventListener("resize", updateGridColumns);
+  
+  const updateGridColumns = () => {
+    if (window.innerWidth < 655) {
+      setGridColumns("grid-cols-1 ");
+    } else if (window.innerWidth < 938) {
+      setGridColumns("grid-cols-2 ");
+    } else if (window.innerWidth < 1200) {
+      setGridColumns("grid-cols-3");
+    }else {
+      setGridColumns("grid-cols-5 ");
+    }
   };
-}, []);
+  useEffect(() => {
+    // Update grid columns when the component mounts
+    updateGridColumns();
+    // Event listener to update grid columns on window resize
+    window.addEventListener("resize", updateGridColumns);
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", updateGridColumns);
+    };
+  }, []);
 // END Function to update the grid columns based on the screen size
 
   return (

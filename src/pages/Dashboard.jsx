@@ -818,21 +818,21 @@ const wfPopMessage = 'Water is not FLOWING!';
                     <RiWaterFlashFill className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Electric Conductivity: </h3>
-                  <p className="text-center px-4">{ECcurrent}</p>
+                  <p className="text-center px-4">{ECcurrent} mS/cm</p>
                 </div>
                 <div className={`${rhcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <WiHumidity className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Relative Humidity: </h3>
-                  <p className="text-center px-4">{RHcurrent}</p>
+                  <p className="text-center px-4">{RHcurrent} %</p>
                 </div>
                 <div className={`${tempcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <TbTemperatureCelsius className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Temperature: </h3>
-                  <p className="text-center px-4">{Tempcurrent}</p>
+                  <p className="text-center px-4">{Tempcurrent} °C</p>
                 </div>
                 <div className={`${phcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
@@ -846,7 +846,7 @@ const wfPopMessage = 'Water is not FLOWING!';
                     <FaTemperatureHigh className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Water Temperature: </h3>
-                  <p className="text-center px-4">{WTcurrent}</p>
+                  <p className="text-center px-4">{WTcurrent} °C</p>
                 </div>
                 <div className={`${phupcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">

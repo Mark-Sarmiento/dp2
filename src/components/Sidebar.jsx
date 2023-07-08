@@ -168,7 +168,7 @@ const Sidebar = ({children}) => {
 
         {/* Render the children components */}
         
-        <div className='inline-flex w-fit'>
+        <div className='inline-flex w-screen'>
           <Outlet />
           {children}
         </div>

@@ -10,33 +10,40 @@ const PopupForm = ({ onPetchay, onSpinach, onCancel }) => {
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customValues, setCustomValues] = useState({
     slctdParam: '',
-    RHmin: '',
-    RHmax: '',
-    ECmin: '',
-    ECmax: '',
-    Tempmin: '',
-    Tempmax: '',
-    PHmin: '',
-    PHmax: '',
-    WTmin: '',
-    WTmax: '',
-    PHupmin: '',
-    PHupmax: '',
-    PHdownmin: '',
-    PHdownmax: '',
-    NSmin: '',
-    NSmax: '',
-    WRmin: '',
-    WRmax: '',
-    RSRVRmin: '',
-    RSRVRmax: '',
+    RHmin: parseFloat(),
+    RHmax: parseFloat(),
+    ECmin: parseFloat(),
+    ECmax: parseFloat(),
+    Tempmin: parseFloat(),
+    Tempmax: parseFloat(),
+    PHmin: parseFloat(),
+    PHmax: parseFloat(),
+    WTmin: parseFloat(),
+    WTmax: parseFloat(),
+    PHupmin: parseFloat(),
+    PHupmax: parseFloat(),
+    PHdownmin: parseFloat(),
+    PHdownmax: parseFloat(),
+    NSmin: parseFloat(),
+    NSmax: parseFloat(),
+    WRmin: parseFloat(),
+    WRmax: parseFloat(),
+    RSRVRmin: parseFloat(),
+    RSRVRmax: parseFloat(),
   });
 
-  const handleInputChange = (event) => {
+  const handleInputChanges = (event) => {
     const { name, value } = event.target;
     setCustomValues((prevValues) => ({
       ...prevValues,
       [name]: value,
+    }));
+  };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setCustomValues((prevValues) => ({
+      ...prevValues,
+      [name]: parseFloat(value),
     }));
   };
 
@@ -94,7 +101,7 @@ return (
                   name='slctdParam'
                   placeholder='Selected Parameter'
                   value={customValues.slctdParam}
-                  onChange={handleInputChange}
+                  onChange={handleInputChanges}
                   className='my-2 text-black w-64'
                   required
                 />

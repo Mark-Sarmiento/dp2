@@ -2,12 +2,11 @@ import React,{useState, useEffect} from "react";
 import {database} from '../firebase';
 import FirebaseData from '../components/FirebaseData';
 import { UserAuth } from '../context/AuthContext';
-import { ref, onValue, off, update } from "firebase/database";
+import { ref, onValue, off, get } from "firebase/database";
 import emailjs from "emailjs-com";
 import spinach from '../assets/spinach.jpeg';
 import petchay from '../assets/petchay.jpg';
 import customsetbg from '../assets/customsetbg.jpg';
-import PopupForm from '../context/PopupForm';
 import { RiWaterFlashFill} from 'react-icons/ri';
 import { WiHumidity } from 'react-icons/wi';
 import { TbTemperatureCelsius } from 'react-icons/tb';
@@ -18,6 +17,7 @@ import pHicon from "../assets/pHicon.png"
 import DashboardBox from "../components/content/DashboardBox";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 emailjs.init("kTo0FMoCg9hTzN5Hn");
 
@@ -405,7 +405,7 @@ const Dashboard = () => {
           setphupcolor('bg-rose-700');
           if (phupEmailSent === false){
             if (phupdata != null){
-              //SWEphuplowlevel();
+              SWEphuplowlevel();
               toast.warning(phupPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -425,6 +425,19 @@ const Dashboard = () => {
       fetchData();
     }
   }, [user?.uid, phupmin, phupdata, phupEmailSent]);
+  
+  const [phuplvl, setphuplvl] = useState();
+  useEffect(() =>{
+    if (phuppercentage > 100){
+      setphuplvl(100);
+    }
+    else if(phuppercentage < 0){
+      setphuplvl(0);
+    }
+    else{
+      setphuplvl(phuppercentage);
+    }
+  },[phuppercentage]);
   // End IRPHUP current
 
   // Start IRPHDOWN current
@@ -475,7 +488,7 @@ const Dashboard = () => {
           setphdowncolor('bg-rose-700');
           if (phdownEmailSent === false){
             if (phdowndata != null){
-              //SWEphdownlowlevel();
+              SWEphdownlowlevel();
               toast.warning(phdownPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -495,6 +508,19 @@ const Dashboard = () => {
       fetchData();
     }
   }, [user?.uid, phdownmin, phdowndata, phdownEmailSent]);
+
+  const [phdownlvl, setphdownlvl] = useState();
+  useEffect(() =>{
+    if (phdownpercentage > 100){
+      setphdownlvl(100);
+    }
+    else if(phdownpercentage < 0){
+      setphdownlvl(0);
+    }
+    else{
+      setphdownlvl(phdownpercentage);
+    }
+  },[phdownpercentage]);
   // End IRPHDOWN current
 
   // Start Nutrient Solution Current
@@ -545,7 +571,7 @@ const Dashboard = () => {
             setnscolor('bg-rose-700');
             if (nsEmailSent === false){
                if (nsdata != null){
-              //SWEnslowlevel();
+              SWEnslowlevel();
               toast.warning(nsPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -565,6 +591,19 @@ const Dashboard = () => {
         fetchData();
       }
     }, [user?.uid, nsmin, nsdata, nsEmailSent]);
+
+    const [nslvl, setnslvl] = useState();
+    useEffect(() =>{
+      if (nspercentage > 100){
+        setnslvl(100);
+      }
+      else if(nspercentage < 0){
+        setnslvl(0);
+      }
+      else{
+        setnslvl(nspercentage);
+      }
+    },[nspercentage]);
   // End Nutrient Solution Current
 
 // Start Water Refill current
@@ -615,7 +654,7 @@ const wrPopMessage = 'Water refill container is running low!';
           setwrcolor('bg-rose-700');
           if (wrEmailSent === false){
             if (wrdata != null){
-              //SWEwrlowlevel();
+              SWEwrlowlevel();
               toast.warning(wrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -635,6 +674,19 @@ const wrPopMessage = 'Water refill container is running low!';
       fetchData();
     }
   }, [user?.uid, wrmin, wrdata, wrEmailSent]);
+
+  const [wrlvl, setwrlvl] = useState();
+  useEffect(() =>{
+    if (wrpercentage > 100){
+      setwrlvl(100);
+    }
+    else if(wrpercentage < 0){
+      setwrlvl(0);
+    }
+    else{
+      setwrlvl(wrpercentage);
+    }
+  },[nspercentage]);
 // End Water Refill current
 
 // Start Reservoir current
@@ -685,7 +737,7 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
           setrsrvrcolor('bg-rose-700');
           if (rsrvrEmailSent === false){
             if (rsrvrdata != null){
-              //SWErsrvrlowlevel();
+              SWErsrvrlowlevel();
               toast.warning(rsrvrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -705,6 +757,19 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
       fetchData();
     }
   }, [user?.uid, rsrvrmin, rsrvrdata, rsrvrEmailSent]);
+
+  const [rsrvrlvl, setrsrvrlvl] = useState();
+  useEffect(() =>{
+    if (rsrvrpercentage > 100){
+      setrsrvrlvl(100);
+    }
+    else if(rsrvrpercentage < 0){
+      setrsrvrlvl(0);
+    }
+    else{
+      setrsrvrlvl(rsrvrpercentage);
+    }
+  },[nspercentage]);
 // End Reservoir current
 
 // Water Flow
@@ -750,7 +815,7 @@ const wfPopMessage = 'Water is not FLOWING!';
           setwfData("Inactive")
           if (wfEmailSent === false){
             if (wfstate != null){
-              //SWEwflowlevel();
+              SWEwflowlevel();
               toast.warning(wfPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -803,14 +868,76 @@ const wfPopMessage = 'Water is not FLOWING!';
   }, []);
 // END Function to update the grid columns based on the screen size
 
+  const [jsonData, setJsonData] = useState();
+useEffect(() => {
+  const fetchJsonData = async () => {
+    if (selectedPlant && user) {
+      const dataRef = ref(database, `Users/${user.uid}/ESP1`);
+
+      const snapshot = await get(dataRef);
+      const data = snapshot.val();
+      setJsonData(data);
+    }
+  };
+
+  fetchJsonData();
+}, [selectedPlant, user]);
+
+const handleDownload = () => {
+  const jsonDataString = JSON.stringify(jsonData, null, 2);
+  const blob = new Blob([jsonDataString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'data.json';
+  link.click();
+
+  URL.revokeObjectURL(url);
+};
+
+
+
+  // START Function to update the margin for dasboardbox based on the screen size
+  const [dbmargin, setdbmargin] = useState('mr-72');
+  
+  const updateMargin = () => {
+    if (window.innerWidth < 1210) {
+      setdbmargin('mr-20')
+    }else{
+      setdbmargin('mr-72')
+    };
+  }
+    useEffect(() => {
+      // Update grid columns when the component mounts
+      updateMargin();
+      // Event listener to update grid columns on window resize
+      window.addEventListener("resize", updateMargin);
+      // Cleanup the event listener when the component unmounts
+      return () => {
+        window.removeEventListener("resize", updateMargin);
+      };
+    }, []);
+  // END Function to update the margin for dasboardbox based on the screen siz
+
   return (
     <>
       <div className="h-screen w-full right-0 ">
-        <div className=" top-0 right-0 left-0 bg-gray-200 bg-opacity-50 ">
+        <div className="flex top-0 right-0 left-0 bg-gray-200 bg-opacity-50 ">
           <h1 className=" p-8 text-white">Dashboard</h1>
+          <div className="flex justify-end pr-8 absolute  right-0">
+          {jsonData && (
+            
+              <button
+                onClick={handleDownload}
+                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Download JSON
+              </button>
+          )}
+          </div>
         </div>
 
-        <div className="p-8  h-full pb-32">
+        <div className={`p-8  h-full pb-32 ${dbmargin}`}>
             <DashboardBox  className=" bg-gray-300 ml-4  bg-opacity-50  h-full w-full border-2 border-black"  >
               <div className={` grid ${gridColumns}  gap-8 mx-auto   justify-center  p-4  h-full overflow-auto`} >
                 <div className={`${eccolor} text-white p-4 rounded-2xl flex-grow `}>
@@ -853,35 +980,35 @@ const wfPopMessage = 'Water is not FLOWING!';
                     <BsFillArrowUpCircleFill className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">PH Up Level: </h3>
-                  <p className="text-center px-4 py-2">{phuppercentage} %</p>
+                  <p className="text-center px-4 py-2">{phuplvl} %</p>
                 </div>
                 <div className={`${phdowncolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <BsFillArrowDownCircleFill className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">PH Down Level: </h3>
-                  <p className="text-center px-4">{phdownpercentage} %</p>
+                  <p className="text-center px-4">{phdownlvl} %</p>
                 </div>
                 <div className={`${nscolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <GiFertilizerBag className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Nutrient Soln Level: </h3>
-                  <p className="text-center px-4">{nspercentage} %</p>
+                  <p className="text-center px-4">{nslvl} %</p>
                 </div>
                 <div className={`${wrcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <GiWaterSplash className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Water Refill Level: </h3>
-                  <p className="text-center px-4"> {wrpercentage} %</p>
+                  <p className="text-center px-4"> {wrlvl} %</p>
                 </div>
                 <div className={`${rsrvrcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
                     <GiWaterTank className="text-5xl" />
                   </div>
                   <h3 className="text-center px-4">Reservoir Level: </h3>
-                  <p className="text-center px-4">{rsrvrpercentage} %</p>  
+                  <p className="text-center px-4">{rsrvrlvl} %</p>  
                 </div>
                 <div className={`${wfcolor} text-white p-4 rounded-2xl  flex-grow`}>
                   <div className="flex justify-center items-center mb-2">
@@ -892,6 +1019,7 @@ const wfPopMessage = 'Water is not FLOWING!';
                 </div>
               </div>
             </DashboardBox>
+            
         </div>
           <div className="fixed bottom-0">
             <FirebaseData  />

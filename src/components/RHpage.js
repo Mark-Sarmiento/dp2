@@ -43,6 +43,8 @@ const RHpage = () => {
       }
     }, [user, selectedPlant]);
   // END Retain the background even when reloading the page
+
+  
   return (
     <div className=' relative  overflow-y-auto'>
       <h1 className="pt-6 pl-4 bg-white bg-opacity-50 p-8">Relative Humidity Graph</h1>

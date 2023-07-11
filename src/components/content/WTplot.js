@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush, ReferenceLine } from "recharts";
 import { database } from '../../firebase';
 import { ref, onValue, off } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
-import FirebaseData from "../FirebaseData";
+//import FirebaseData from "../FirebaseData";
 import BoxHeader from "./BoxHeader.tsx";
 
+/*
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
@@ -28,11 +29,13 @@ const LatestValueRH = ({ value }) => {
     </div>
   );
 };
+ */
 
 const WTplot = () => {
   const { user } = UserAuth();
   const [data, setData] = useState([]);
   const [wtmin, setwtmin] = useState();
+  const [wtmax, setwtmax] = useState();
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
   const [maxData, setMaxData] = useState(20);
@@ -68,10 +71,16 @@ const WTplot = () => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/WT`);
       const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/WTmin`);
+      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/WTmax`);
 
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const WTmin = snapshot.val();
         setwtmin(WTmin);
+      });
+      
+      const dbconfCallback1 = onValue(dbconf1, (snapshot) => {
+        const WTmax = snapshot.val();
+        setwtmax(WTmax);
       });
 
       onValue(dbRef, (snapshot) => {
@@ -92,6 +101,7 @@ const WTplot = () => {
 
                 // Add data point to chart data
                 const dataPoint = {
+                  date: date,
                   time: formattedTime,
                   value: value,
                 };
@@ -107,7 +117,7 @@ const WTplot = () => {
                   dataCount++;
                 } else {
                   const averageValue = sum / dataCount;
-                  const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
+                  const formattedDate = currentDate?.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
                   const averageDataPoint = {
                     date: formattedDate,
                     value: averageValue,
@@ -148,12 +158,39 @@ const WTplot = () => {
       });
       return () => {
         off(dbconf, 'value', dbconfCallback);
+        off(dbconf1, 'value', dbconfCallback1);
       };
     };
 
     fetchData();
   }, [user?.uid, maxData, wtmin]);
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Time: {dataPoint.time}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltip1 = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
   return (
@@ -180,6 +217,8 @@ const WTplot = () => {
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
             <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={Math.max(0, data.length - maxData)}/>
+            <ReferenceLine y={wtmax} label={`Max (${wtmax})`}  stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={wtmin} label={`Min (${wtmin})`}  stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
@@ -191,9 +230,11 @@ const WTplot = () => {
             <XAxis dataKey="date" />
             <YAxis dataKey="value" />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip1 />} />
             <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
             <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={Math.max(0, averageData.length - 7)}/>
+            <ReferenceLine y={wtmax} label={`Max (${wtmax})`}  stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={wtmin} label={`Min (${wtmin})`}  stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>

@@ -67,7 +67,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/EC`);
-      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/ECmin`);
+      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/ECminwopad`);
   
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const ECmin = snapshot.val();
@@ -242,8 +242,8 @@ const Dashboard = () => {
    useEffect(() => {
         const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/PH`);
-      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHmin`);
-      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/PHmax`);
+      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHminwopad`);
+      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/PHmaxwopad`);
   
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const PHmin = snapshot.val();
@@ -405,7 +405,7 @@ const Dashboard = () => {
           setphupcolor('bg-rose-700');
           if (phupEmailSent === false){
             if (phupdata != null){
-              SWEphuplowlevel();
+              //SWEphuplowlevel();
               toast.warning(phupPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -488,7 +488,7 @@ const Dashboard = () => {
           setphdowncolor('bg-rose-700');
           if (phdownEmailSent === false){
             if (phdowndata != null){
-              SWEphdownlowlevel();
+              //SWEphdownlowlevel();
               toast.warning(phdownPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -571,7 +571,7 @@ const Dashboard = () => {
             setnscolor('bg-rose-700');
             if (nsEmailSent === false){
                if (nsdata != null){
-              SWEnslowlevel();
+              //SWEnslowlevel();
               toast.warning(nsPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -654,7 +654,7 @@ const wrPopMessage = 'Water refill container is running low!';
           setwrcolor('bg-rose-700');
           if (wrEmailSent === false){
             if (wrdata != null){
-              SWEwrlowlevel();
+              //SWEwrlowlevel();
               toast.warning(wrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -686,7 +686,7 @@ const wrPopMessage = 'Water refill container is running low!';
     else{
       setwrlvl(wrpercentage);
     }
-  },[nspercentage]);
+  },[wrpercentage]);
 // End Water Refill current
 
 // Start Reservoir current
@@ -737,7 +737,7 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
           setrsrvrcolor('bg-rose-700');
           if (rsrvrEmailSent === false){
             if (rsrvrdata != null){
-              SWErsrvrlowlevel();
+              //SWErsrvrlowlevel();
               toast.warning(rsrvrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -769,7 +769,7 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
     else{
       setrsrvrlvl(rsrvrpercentage);
     }
-  },[nspercentage]);
+  },[rsrvrpercentage]);
 // End Reservoir current
 
 // Water Flow
@@ -815,7 +815,7 @@ const wfPopMessage = 'Water is not FLOWING!';
           setwfData("Inactive")
           if (wfEmailSent === false){
             if (wfstate != null){
-              SWEwffalse();
+              //SWEwffalse();
               toast.warning(wfPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds

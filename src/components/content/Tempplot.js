@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush, ReferenceLine } from "recharts";
 import { database } from '../../firebase';
 import { ref, onValue, off } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
-import FirebaseData from "../FirebaseData";
+//import FirebaseData from "../FirebaseData";
 import BoxHeader from "./BoxHeader.tsx";
 
+/*
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
@@ -28,11 +29,13 @@ const LatestValueRH = ({ value }) => {
     </div>
   );
 };
+ */
 
 const Tempplot = () => {
   const { user } = UserAuth();
   const [data, setData] = useState([]);
   const [tempmin, settempmin] = useState();
+  const [tempmax, settempmax] = useState();
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
   const [maxData, setMaxData] = useState(20);
@@ -68,10 +71,15 @@ const Tempplot = () => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/Temp`);
       const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/Tempmin`);
+      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/Tempmax`);
 
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const Tempmin = snapshot.val();
         settempmin(Tempmin);
+      });
+      const dbconfCallback1 = onValue(dbconf1, (snapshot) => {
+        const Tempmax = snapshot.val();
+        settempmax(Tempmax);
       });
 
       onValue(dbRef, (snapshot) => {
@@ -92,6 +100,7 @@ const Tempplot = () => {
 
                 // Add data point to chart data
                 const dataPoint = {
+                  date: date,
                   time: formattedTime,
                   value: value,
                 };
@@ -107,7 +116,7 @@ const Tempplot = () => {
                   dataCount++;
                 } else {
                   const averageValue = sum / dataCount;
-                  const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
+                  const formattedDate = currentDate?.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
                   const averageDataPoint = {
                     date: formattedDate,
                     value: averageValue,
@@ -148,12 +157,39 @@ const Tempplot = () => {
       });
       return () => {
         off(dbconf, 'value', dbconfCallback);
+        off(dbconf1, 'value', dbconfCallback1);
       };
     };
 
     fetchData();
-  }, [user?.uid, maxData, tempmin]);
+  }, [user?.uid, maxData, tempmin,tempmax]);
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Time: {dataPoint.time}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltip1 = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
   return (
@@ -180,6 +216,8 @@ const Tempplot = () => {
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
             <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={Math.max(0, data.length - maxData)}/>
+            <ReferenceLine y={tempmax} label={`Max (${tempmax})`}  stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={tempmin} label={`Min (${tempmin})`}  stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
@@ -191,9 +229,11 @@ const Tempplot = () => {
             <XAxis dataKey="date" />
             <YAxis dataKey="value" />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip1 />} />
             <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
             <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={Math.max(0, averageData.length - 7)}/>
+            <ReferenceLine y={tempmax} label={`Max (${tempmax})`}  stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={tempmin} label={`Min (${tempmin})`}  stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>

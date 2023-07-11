@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush, ReferenceLine } from "recharts";
 import { database } from '../../firebase';
 import { ref, onValue, off } from "firebase/database";
 import { UserAuth } from '../../context/AuthContext';
 import DashboardBox from "./DashboardBox";
-import FirebaseData from "../FirebaseData";
 import BoxHeader from "./BoxHeader.tsx";
 
+
+
+/*
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
@@ -19,7 +21,6 @@ const CustomTooltip = ({ active, payload }) => {
   }
   return null;
 };
-
 const LatestValueRH = ({ value }) => {
   return (
     <div className="value-container">
@@ -28,11 +29,13 @@ const LatestValueRH = ({ value }) => {
     </div>
   );
 };
+ */
 
 const PHplot = () => {
   const { user } = UserAuth();
   const [data, setData] = useState([]);
   const [phmin, setphmin] = useState();
+  const [phmax, setphmax] = useState();
   const [color, setColor] = useState("#8884d8");
   const [areaColor, setAreaColor] = useState("url(#colorValue)");
   const [maxData, setMaxData] = useState(20);
@@ -67,11 +70,16 @@ const PHplot = () => {
   useEffect(() => {
     const fetchData = async () => {
       const dbRef = ref(database, `Users/${user?.uid}/ESP1/data/PH`);
-      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHmin`);
+      const dbconf = ref(database, `Users/${user?.uid}/ESP1/Params/PHminwopad`);
+      const dbconf1 = ref(database, `Users/${user?.uid}/ESP1/Params/PHmaxwopad`);
 
       const dbconfCallback = onValue(dbconf, (snapshot) => {
         const PHmin = snapshot.val();
         setphmin(PHmin);
+      });
+      const dbconfCallback1 = onValue(dbconf1, (snapshot) => {
+        const PHmax = snapshot.val();
+        setphmax(PHmax);
       });
 
       onValue(dbRef, (snapshot) => {
@@ -92,6 +100,7 @@ const PHplot = () => {
 
                 // Add data point to chart data
                 const dataPoint = {
+                  date: date,
                   time: formattedTime,
                   value: value,
                 };
@@ -107,7 +116,7 @@ const PHplot = () => {
                   dataCount++;
                 } else {
                   const averageValue = sum / dataCount;
-                  const formattedDate = currentDate.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
+                  const formattedDate = currentDate?.toISOString().slice(0, 10); // Format date as "yyyy:mm:dd"
                   const averageDataPoint = {
                     date: formattedDate,
                     value: averageValue,
@@ -148,11 +157,39 @@ const PHplot = () => {
       });
       return () => {
         off(dbconf, 'value', dbconfCallback);
+        off(dbconf1, 'value', dbconfCallback1);
       };
     };
 
     fetchData();
-  }, [user?.uid, maxData, phmin]);
+  }, [user?.uid, maxData, phmin, phmax]);
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Time: {dataPoint.time}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltip1 = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const dataPoint = payload[0].payload;
+      return (
+        <div className="bg-white rounded p-2">
+          <p className="text-gray-800 font-medium">Date: {dataPoint.date}</p>
+          <p className="text-gray-800 font-medium">Value: {dataPoint.value.toFixed(4)}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const currentValue = data.length > 0 ? data[data.length - 1].value : null;
 
@@ -175,11 +212,13 @@ const PHplot = () => {
               </linearGradient>
             </defs>
             <XAxis dataKey="time" domain={[0, "dataMax"]} />
-            <YAxis dataKey="value" />
+            <YAxis dataKey="value"  domain={[0, "dataMax"]} includeHidden/>
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />
             <Brush dataKey="time" height={30} stroke="#8884d8"  startIndex={Math.max(0, data.length - maxData)}/>
+            <ReferenceLine y={phmax} label={`Min (${phmax})`} stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={phmin} label={`Min (${phmin})`} stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
@@ -191,12 +230,15 @@ const PHplot = () => {
             <XAxis dataKey="date" />
             <YAxis dataKey="value" />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip1 />} />
             <Area type="linear" dataKey="value" stroke="#8884d8" fillOpacity={1} fill="url(#colorValue)" isAnimationActive={false} />
             <Brush dataKey="date" height={30} stroke="#8884d8"  startIndex={Math.max(0, averageData.length - 7)}/>
+            <ReferenceLine y={phmax} label={`Min (${phmax})`} stroke="red" strokeDasharray="5 5"/>
+            <ReferenceLine y={phmin} label={`Min (${phmin})`} stroke="red" strokeDasharray="5 5"/>
           </AreaChart>
         </ResponsiveContainer>
       </DashboardBox>
+      
       {/*
       <div> <FirebaseData/></div>
        */}

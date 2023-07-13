@@ -212,7 +212,7 @@ const PHplot = () => {
               </linearGradient>
             </defs>
             <XAxis dataKey="time" domain={[0, "dataMax"]} />
-            <YAxis dataKey="value"  domain={[0, "dataMax"]} includeHidden/>
+            <YAxis dataKey="value"  domain={["auto", "dataMax"]} includeHidden/>
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip content={<CustomTooltip />} />
             <Area type="linear" dataKey="value" stroke={color} fillOpacity={1} fill={areaColor} isAnimationActive={false} />

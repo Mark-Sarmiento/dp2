@@ -19,7 +19,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-emailjs.init("kTo0FMoCg9hTzN5Hn");
+emailjs.init("nhsQxh2nrvjFQr_aT");
 
 
 const Dashboard = () => {
@@ -375,7 +375,7 @@ const Dashboard = () => {
     };
 
     try {
-      await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+      await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
       console.log("Email sent successfully");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -405,7 +405,7 @@ const Dashboard = () => {
           setphupcolor('bg-rose-700');
           if (phupEmailSent === false){
             if (phupdata != null){
-              //SWEphuplowlevel();
+              SWEphuplowlevel();
               toast.warning(phupPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -458,7 +458,7 @@ const Dashboard = () => {
     };
 
     try {
-      await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+      await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
       console.log("Email sent successfully");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -488,7 +488,7 @@ const Dashboard = () => {
           setphdowncolor('bg-rose-700');
           if (phdownEmailSent === false){
             if (phdowndata != null){
-              //SWEphdownlowlevel();
+              SWEphdownlowlevel();
               toast.warning(phdownPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
@@ -541,7 +541,7 @@ const Dashboard = () => {
       };
 
       try {
-        await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+        await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
         console.log("Email sent successfully");
       } catch (error) {
         console.error("Error sending email:", error);
@@ -571,7 +571,7 @@ const Dashboard = () => {
             setnscolor('bg-rose-700');
             if (nsEmailSent === false){
                if (nsdata != null){
-              //SWEnslowlevel();
+              SWEnslowlevel();
               toast.warning(nsPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -624,7 +624,7 @@ const wrPopMessage = 'Water refill container is running low!';
     };
 
     try {
-      await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+      await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
       console.log("Email sent successfully");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -654,7 +654,7 @@ const wrPopMessage = 'Water refill container is running low!';
           setwrcolor('bg-rose-700');
           if (wrEmailSent === false){
             if (wrdata != null){
-              //SWEwrlowlevel();
+              SWEwrlowlevel();
               toast.warning(wrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -707,7 +707,7 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
     };
 
     try {
-      await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+      await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
       console.log("Email sent successfully");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -737,7 +737,7 @@ const rsrvrPopMessage = 'Water Reservoir is running low!';
           setrsrvrcolor('bg-rose-700');
           if (rsrvrEmailSent === false){
             if (rsrvrdata != null){
-              //SWErsrvrlowlevel();
+              SWErsrvrlowlevel();
               toast.warning(rsrvrPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 10 seconds
@@ -789,7 +789,7 @@ const wfPopMessage = 'Water is not FLOWING!';
     };
 
     try {
-      await emailjs.send("service_bi2u2dw", "template_e9yzocj", templateParams);
+      await emailjs.send("service_wa1nf7w", "template_y8heajh", templateParams);
       console.log("Email sent successfully");
     } catch (error) {
       console.error("Error sending email:", error);
@@ -815,7 +815,7 @@ const wfPopMessage = 'Water is not FLOWING!';
           setwfData("Inactive")
           if (wfEmailSent === false){
             if (wfstate != null){
-              //SWEwffalse();
+              SWEwffalse();
               toast.warning(wfPopMessage, {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 10000, // Close the pop-up after 3 seconds
